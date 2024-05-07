@@ -19,8 +19,11 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('notification_email')->nullable();
             $table->integer('max_submissions')->default(0);
+            $table->integer('max_submissions_per_user')->default(0);
             $table->boolean('recaptcha')->default(false);
             $table->boolean('guest')->default(false);
+            $table->boolean('can_view_submission')->default(true);
+            $table->boolean('can_respond')->default(true);
             $table->boolean('active')->default(true);
             $table->timestamps();
         });
@@ -33,6 +36,7 @@ return new class extends Migration
             $table->string('type');
             $table->string('placeholder')->nullable();
             $table->string('default_value')->nullable();
+            $table->string('name');
             $table->string('rules')->nullable();
             $table->integer('order')->default(0);
             $table->json('options')->nullable();
@@ -40,6 +44,9 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('form_id')->references('id')->on('module_forms')->onDelete('cascade');
+
+            // make sure name and form_id are unique
+            $table->unique(['name', 'form_id']);
         });
 
         Schema::create('module_forms_statuses', function (Blueprint $table) {
@@ -74,5 +81,6 @@ return new class extends Migration
         Schema::dropIfExists('module_forms');
         Schema::dropIfExists('module_forms_fields');
         Schema::dropIfExists('module_forms_statuses');
+        Schema::dropIfExists('module_forms_submissions');
     }
 };

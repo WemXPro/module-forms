@@ -14,7 +14,7 @@ return [
         [
             [
                 'name' => 'Forms Module',
-                'icon' => '<i class="fas fa-solid fa-download"></i>',
+                'icon' => '<i class="fas fa-book"></i>',
                 'type' => 'dropdown',
                 'items' => [
                     [
