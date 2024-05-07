@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('slug')->unique();
+            $table->float('price')->default(0);
+            $table->json('allowed_gateways')->nullable();
             $table->string('notification_email')->nullable();
             $table->integer('max_submissions')->default(0);
             $table->integer('max_submissions_per_user')->default(0);

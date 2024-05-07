@@ -13,6 +13,8 @@ class Form extends Model
         'title',
         'description',
         'slug',
+        'price',
+        'allowed_gateways',
         'notification_email',
         'max_submissions',
         'max_submissions_per_user',
