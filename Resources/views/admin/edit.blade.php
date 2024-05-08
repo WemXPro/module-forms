@@ -17,16 +17,16 @@
                 <strong>Warning!</strong> This form is set to allow guests to view their submission, but it does not have an email field. Please add an email field to this form to allow guests to view their submission.
             </div>
         @endif
+
         <div class="section-body">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
                         <h4>Forms</h4>
                         <div class="card-header-action">
-                            <a href="#" class="btn btn-icon icon-left btn-primary">
-                                <i class="fas fa-pencil-alt"></i>
-                                Add Field
-                            </a>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createFieldModal"><i class="fas fa-solid fa-plus"></i>
+                                New Field
+                            </button>
                         </div>
                     </div>
                     <div class="card-body">
@@ -91,14 +91,14 @@
                                 <div class="form-group col-6">
                                     <label for="max_submissions">Maximum Submissions (Optional)</label>
                                     <input type="number" class="form-control" name="max_submissions" id="max_submissions"
-                                        value="{{ old('max_submissions') }}">
+                                        value="{{ $form->max_submissions }}">
                                     <small class="form-text text-muted">Maximum amount of times this form can be submitted before its closed. (Leave empty to not set a limit)</small>
                                 </div>
     
                                 <div class="form-group col-6">
                                     <label for="max_submissions_per_user">Maximum Submissions per user (Optional)</label>
                                     <input type="number" class="form-control" name="max_submissions_per_user" id="max_submissions_per_user"
-                                        value="{{ old('max_submissions_per_user') }}">
+                                        value="{{ $form->max_submissions_per_user }}">
                                     <small class="form-text text-muted">Maximum amount of times this form can be submitted by a single user. (If you enable guests, the form can be submitted multiple times by guests!)</small>
                                 </div>
                             </div>
@@ -179,7 +179,7 @@
                                     </label>
                                 </div>
 
-                                <div class="form-group col-md-4 col-12" id="can_respond_field">
+                                <div class="form-group col-md-4 col-12" id="can_respond_field" @if(!$form->can_view_submission) style="display: none;" @endif>
                                     <div class="control-label">Can users respond</div>
                                     <label class="custom-switch mt-2">
                                         <input type="checkbox" name="can_respond" class="custom-switch-input" @if($form->can_respond) checked="" @endif value="1" />
@@ -216,6 +216,104 @@
         </div>
     </section>
 
+    {{-- create field modal --}}
+    <div class="modal fade show" id="createFieldModal" tabindex="-1" role="dialog" aria-labelledby="createFieldModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createFieldModalLabel">Create Field</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form action="#" method="POST">
+                    <div class="modal-body">
+                        @csrf
+
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label for="label">Label</label>
+                                <input type="text" class="form-control" name="label" id="label" placeholder="Label" onchange="generateFieldId(this)" required>
+                                <small class="form-text text-muted">Label of the field i.e "Email"</small>
+                            </div>
+
+                            <div class="form-group col-6">
+                                <label for="label">Identifier</label>
+                                <input type="text" class="form-control" name="name" id="name" placeholder="Identifier" required>
+                                <small class="form-text text-muted">Identifier of field (Leave as default if unsure)</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description (optional)</label>
+                            <input type="text" class="form-control" name="description" id="description" placeholder="Description">
+                            <small class="form-text text-muted">Short description of what the input field is for</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="type">Field Type</label>
+                            <div class="input-group mb-2">
+                                <select class="form-control select2 select2-hidden-accessible" name="type" tabindex="-1" aria-hidden="true" required>
+                                    <option value="text">Text</option>
+                                    <option value="textarea">Textarea</option>
+                                    <option value="select">Select</option>
+                                    <option value="checkbox">Checkbox</option>
+                                    <option value="radio">Radio</option>
+                                    <option value="email">Email</option>
+                                    <option value="number">Number</option>
+                                    <option value="date">Date</option>
+                                    <option value="password">Password</option>
+                                </select>
+                                <small class="form-text text-muted">Select field type</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="placeholder">Placeholder</label>
+                            <input type="text" class="form-control" name="placeholder" id="placeholder" placeholder="Placeholder">
+                            <small class="form-text text-muted">The placeholder text for this field</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="default_value">Default Value (optional)</label>
+                            <input type="text" class="form-control" name="default_value" id="default_value" placeholder="Default Value">
+                            <small class="form-text text-muted">Default Value of this field</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="rules">Validation Rules</label>
+                            <input type="text" class="form-control" name="rules" id="rules" placeholder="rules">
+                            <small class="form-text text-muted">Validation rules help you make sure that the correct data is entered. For example, to make this field required use "required" </small>
+                            <div>
+                                <button type="button" onclick="appendRule('required')" class="btn btn-sm btn-light">required</button>
+                                <button type="button" onclick="appendRule('numeric')" class="btn btn-sm btn-light">numeric</button>
+                                <button type="button" onclick="appendRule('email')" class="btn btn-sm btn-light">email</button>
+                                <button type="button" onclick="appendRule('active_url')" class="btn btn-sm btn-light">active url</button>
+                                <button type="button" onclick="appendRule('url')" class="btn btn-sm btn-light">url</button>
+                                <button type="button" onclick="appendRule('date')" class="btn btn-sm btn-light">date</button>
+                                <button type="button" onclick="appendRule('min:3')" class="btn btn-sm btn-light">min chars</button>
+                                <button type="button" onclick="appendRule('max:255')" class="btn btn-sm btn-light">max chars</button>
+                                <button type="button" onclick="appendRule('in:audi,bmw,mercedes')" class="btn btn-sm btn-light">in list</button>
+                                <button type="button" onclick="appendRule('starts_with:test')" class="btn btn-sm btn-light">stars with</button>
+                                <button type="button" onclick="appendRule('ends_with:test')" class="btn btn-sm btn-light">ends with</button>
+                                <button type="button" onclick="appendRule('date')" class="btn btn-sm btn-light">date</button>
+                            </div>
+                            <small class="form-text text-muted">View all <a href="https://laravel.com/docs/11.x/validation#available-validation-rules" target="_blank">validation rules</a> </small>
+
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+
     <script>
         function canViewUpdated() {
             var isChecked = document.getElementsByName('can_view_submission')[0].checked;
@@ -232,7 +330,30 @@
                 document.getElementById('price_field').style.display = '';
             } else {
                 document.getElementById('price_field').style.display = 'none';
+                document.getElementById('price').value = 0;
             }
+        }
+
+        function appendRule(rule)
+        {
+            var rules = document.getElementById('rules');
+
+            // check if rule already exists
+            if (rules.value.includes(rule)) {
+                return;
+            }
+
+            if (rules.value.length > 0) {
+                // make sure string does not end with | 
+                if (rules.value.endsWith('|')) {
+                    rules.value += rule;
+                } else {
+                    rules.value += '|' + rule;
+                }
+            } else {
+                rules.value = rule;
+            }
+
         }
 
         function generateSlug() {

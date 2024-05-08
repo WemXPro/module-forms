@@ -39,7 +39,22 @@ class FormsController extends Controller
             'can_respond' => 'nullable|boolean',            
         ]);
 
-        $form = Form::create($request->all());
+        $form = Form::create([
+            'name' => $request->get('name'),
+            'title' => $request->get('title'),
+            'description' => $request->get('description'),
+            'slug' => $request->get('slug'),
+            'notification_email' => $request->get('notification_email'),
+            'max_submissions' => $request->get('max_submissions'),
+            'max_submissions_per_user' => $request->get('max_submissions_per_user'),
+            'required_packages' => $request->get('required_packages'),
+            'allowed_gateways' => $request->get('allowed_gateways'),
+            'price' => $request->get('price', 0),
+            'recaptcha' => $request->get('recaptcha', false),
+            'guest' => $request->get('guest', false),
+            'can_view_submission' => $request->get('can_view_submission', false),
+            'can_respond' => $request->get('can_respond', false),
+        ]);
 
         return redirect()->route('admin.forms.index')->withSuccess('Form created successfully.');
     }
@@ -69,7 +84,22 @@ class FormsController extends Controller
             'can_respond' => 'boolean',         
         ]);
 
-        $form->update($request->all());
+        $form->update([
+            'name' => $request->get('name'),
+            'title' => $request->get('title'),
+            'description' => $request->get('description'),
+            'slug' => $request->get('slug'),
+            'notification_email' => $request->get('notification_email'),
+            'max_submissions' => $request->get('max_submissions'),
+            'max_submissions_per_user' => $request->get('max_submissions_per_user'),
+            'required_packages' => $request->get('required_packages', null),
+            'allowed_gateways' => $request->get('allowed_gateways', null),
+            'price' => $request->get('price', 0),
+            'recaptcha' => $request->get('recaptcha', false),
+            'guest' => $request->get('guest', false),
+            'can_view_submission' => $request->get('can_view_submission', false),
+            'can_respond' => $request->get('can_respond', false),
+        ]);
 
         return redirect()->back()->withSuccess('Form updated successfully.');
     }
