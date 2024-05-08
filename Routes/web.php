@@ -26,6 +26,6 @@ Route::prefix('/admin/forms')->middleware('permission')->group(function () {
 
 });
 
-Route::prefix('forms')->group(function(){
+Route::prefix(config('forms.route_prefix'))->group(function(){
     Route::get('/{form:slug}', [Client\FormsController::class, 'view'])->name('forms.view');
 });

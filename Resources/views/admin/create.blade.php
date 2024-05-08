@@ -47,7 +47,7 @@
                                 <div class="input-group-prepend">
                                     <div>
                                         <div class="input-group-text">
-                                            {{ url('/') }}/forms/
+                                            {{ url('/') }}/{{ config('forms.route_prefix') }}/
                                         </div>
                                     </div>
                                     <input type="text" name="slug" id="slug" placeholder="example" class="form-control" value="" required="" />
@@ -61,18 +61,73 @@
                                 <small class="form-text text-muted">The email where a notification is sent to once this form has been submitted</small>
                             </div>
 
-                            <div class="form-group">
-                                <label for="max_submissions">Maximum Submissions (Optional)</label>
-                                <input type="number" class="form-control" name="max_submissions" id="max_submissions"
-                                    value="{{ old('max_submissions') }}">
-                                <small class="form-text text-muted">Maximum amount of times this form can be submitted before its closed. (Leave empty to not set a limit)</small>
+                            <div class="row">
+                                <div class="form-group col-6">
+                                    <label for="max_submissions">Maximum Submissions (Optional)</label>
+                                    <input type="number" class="form-control" name="max_submissions" id="max_submissions"
+                                        value="{{ old('max_submissions') }}">
+                                    <small class="form-text text-muted">Maximum amount of times this form can be submitted before its closed. (Leave empty to not set a limit)</small>
+                                </div>
+    
+                                <div class="form-group col-6">
+                                    <label for="max_submissions_per_user">Maximum Submissions per user (Optional)</label>
+                                    <input type="number" class="form-control" name="max_submissions_per_user" id="max_submissions_per_user"
+                                        value="{{ old('max_submissions_per_user') }}">
+                                    <small class="form-text text-muted">Maximum amount of times this form can be submitted by a single user. (If you enable guests, the form can be submitted multiple times by guests!)</small>
+                                </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="max_submissions_per_user">Maximum Submissions per user (Optional)</label>
-                                <input type="number" class="form-control" name="max_submissions_per_user" id="max_submissions_per_user"
-                                    value="{{ old('max_submissions_per_user') }}">
-                                <small class="form-text text-muted">Maximum amount of times this form can be submitted by a single user. (If you enable guests, the form can be submitted multiple times by guests!)</small>
+                                <label for="required_packages">Required Package (Optional)</label>
+                                <div class="input-group mb-2">
+                                    <select name="required_packages[]" id="required_packages"
+                                        class="form-control select2 select2-hidden-accessible" multiple="" tabindex="-1"
+                                        aria-hidden="true">
+                                        @foreach (Package::get() as $package)
+                                            <option value="{{ $package->id }}">{{ $package->name }}</option>
+                                        @endforeach
+
+                                    </select>
+                                    <small class="form-text text-muted">Does the user require certain packages in order to view this form</small>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="control-label">Make form paid</div>
+                                <label class="custom-switch mt-2">
+                                    <input type="checkbox" id="is_paid" onchange="formPaidUpdated(this)" class="custom-switch-input" value="1" />
+                                    <span class="custom-switch-indicator"></span>
+                                    <span class="custom-switch-description">
+                                        If enabled, the user will have to pay before they can submit the form
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div id="price_field" style="display: none;">
+                                <div class="form-group">
+                                    <label for="price">Price</label>
+                                    <input type="number" step="0.01" min="0" value="0" class="form-control" name="price" id="price"
+                                        value="{{ old('price') }}">
+                                    <small class="form-text text-muted">
+                                        The price the user has to pay in order to submit the form
+                                    </small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="allowed_gateways">Allowed Gateways (Optional)</label>
+                                    <div class="input-group mb-2">
+                                        <select class="form-control select2 select2-hidden-accessible"
+                                                name="allowed_gateways[]" tabindex="-1" aria-hidden="true" multiple>
+                                            @foreach(App\Models\Gateways\Gateway::get() as $gateway)
+                                                @if(!$gateway->status)
+                                                    @continue
+                                                @endif
+                                                <option value="{{ $gateway->id }}" selected>{{ $gateway->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <small class="form-text text-muted">Select the gateways allowed to pay with</small>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="row">
@@ -145,9 +200,22 @@
             }
         }
 
+        function formPaidUpdated(element) {
+            var isChecked = element.checked;
+            if (isChecked) {
+                document.getElementById('price_field').style.display = '';
+            } else {
+                document.getElementById('price_field').style.display = 'none';
+            }
+        }
+
         function generateSlug() {
             var slug = document.getElementById('slug');
             var name = document.getElementById('name').value;
+            
+            // set title to name
+            document.getElementById('title').value = name;
+
             slug.value = name
                         .toLowerCase() // convert to lowercase
                         .trim() // remove leading and trailing whitespace

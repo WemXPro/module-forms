@@ -8,6 +8,8 @@ return [
     'version' => '1.0.0',
     'wemx_version' => '1.0.0',
 
+    'route_prefix' => env('FORMS_ROUTE_PREFIX', 'forms'),
+
     'elements' => [
 
         'admin_menu' => 

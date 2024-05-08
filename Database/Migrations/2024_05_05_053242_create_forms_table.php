@@ -19,9 +19,10 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->float('price')->default(0);
             $table->json('allowed_gateways')->nullable();
+            $table->json('required_packages')->nullable();
             $table->string('notification_email')->nullable();
-            $table->integer('max_submissions')->default(0);
-            $table->integer('max_submissions_per_user')->default(0);
+            $table->integer('max_submissions')->default(0)->nullable();
+            $table->integer('max_submissions_per_user')->default(0)->nullable();
             $table->boolean('recaptcha')->default(false);
             $table->boolean('guest')->default(false);
             $table->boolean('can_view_submission')->default(true);
@@ -67,6 +68,7 @@ return new class extends Migration
             $table->text('ip_address');
             $table->text('user_agent');
             $table->json('data');
+            $table->boolean('paid')->default(false);
             $table->timestamps();
 
             $table->foreign('form_id')->references('id')->on('module_forms')->onDelete('cascade');

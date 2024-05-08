@@ -30,6 +30,9 @@ class FormsController extends Controller
             'notification_email' => 'nullable|email',
             'max_submissions' => 'nullable|integer',
             'max_submissions_per_user' => 'nullable|integer',
+            'required_packages' => 'nullable|array',
+            'allowed_gateways' => 'nullable|array',
+            'price' => 'nullable|numeric',
             'recaptcha' => 'nullable|boolean',
             'guest' => 'nullable|boolean',
             'can_view_submission' => 'nullable|boolean',
@@ -43,12 +46,13 @@ class FormsController extends Controller
 
     public function edit(Form $form)
     {
+        // dd($form->allowed_gateways);
         return view('forms::admin.edit', compact('form'));
     }
 
     public function update(Request $request, Form $form)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required',
             'title' => 'required',
             'description' => 'nullable',
@@ -56,10 +60,13 @@ class FormsController extends Controller
             'notification_email' => 'nullable|email',
             'max_submissions' => 'nullable|integer',
             'max_submissions_per_user' => 'nullable|integer',
-            'recaptcha' => 'nullable|boolean',
-            'guest' => 'nullable|boolean',
-            'can_view_submission' => 'nullable|boolean',
-            'can_respond' => 'nullable|boolean',            
+            'required_packages' => 'nullable|array',
+            'allowed_gateways' => 'nullable|array',
+            'price' => 'nullable|numeric',
+            'recaptcha' => 'boolean',
+            'guest' => 'boolean',
+            'can_view_submission' => 'boolean',
+            'can_respond' => 'boolean',         
         ]);
 
         $form->update($request->all());

@@ -15,6 +15,7 @@ class Form extends Model
         'slug',
         'price',
         'allowed_gateways',
+        'required_packages',
         'notification_email',
         'max_submissions',
         'max_submissions_per_user',
@@ -25,8 +26,30 @@ class Form extends Model
         'active',
     ];
 
+    protected $casts = [
+        'allowed_gateways' => 'array',
+        'required_packages' => 'array',
+    ];
+
+    /**
+     * The model's default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'guest' => false,
+        'can_view_submission' => false,
+        'can_respond' => false,
+        'recaptcha' => false,
+    ];
+
     public function fields()
     {
         return $this->hasMany(FormField::class);
+    }
+
+    public function isPaid() : bool
+    {
+        return $this->price > 0;
     }
 }
