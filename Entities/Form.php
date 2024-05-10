@@ -48,8 +48,23 @@ class Form extends Model
         return $this->hasMany(FormField::class);
     }
 
+    public function submissions()
+    {
+        return $this->hasMany(Submission::class);
+    }
+
     public function isPaid() : bool
     {
         return $this->price > 0;
+    }
+
+    public function fieldNames()
+    {
+        return $this->fields->pluck('name')->toArray();
+    }
+
+    public function fieldRules()
+    {
+        return $this->fields->pluck('rules', 'name')->toArray();
     }
 }

@@ -31,7 +31,37 @@
                     </div>
                     <div class="card-body">
                         @if($form->fields->count() > 0)
+                        <div class="table-responsive">
+                            <table class="table table-striped table-md">
+                                <tbody>
+                                    <tr>
+                                        <th class="text-center">{!! __('Label') !!}</th>
+                                        <th class="text-center">{!! __('Description') !!}</th>
+                                        <th class="text-center">{!! __('Type') !!}</th>
+                                        <th class="text-center">{!! __('Rules') !!}</th>
+                                        <th class="text-center">{!! __('Actions') !!}</th>
+                                    </tr>
 
+                                    @foreach ($form->fields as $field)
+                                        <tr>
+                                            <td class="text-center">{{ $field->label }}</td>
+                                            <td class="text-center">{{ $field->description }}</td>
+                                            <td class="text-center">{{ $field->type }}</td>
+                                            <td class="text-center">{{ $field->rules }}</td>
+
+                                            <td class="text-center">
+                                                <a href="#" class="btn btn-primary"><i class="fas fa-solid fa-caret-up"></i></a>
+                                                <a href="#" class="btn btn-primary"><i class="fas fa-solid fa-caret-down"></i></a>
+                                                <a href="#" class="btn btn-primary">Edit</a>
+                                                <a href="#" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
+
+                                            </td>
+                                        </tr>
+                                    @endforeach
+
+                                </tbody>
+                            </table>
+                        </div>
                         @else 
                             @include(AdminTheme::path('empty-state'), ['title' => 'No Fields', 'description' => 'This form has no fields. Please add some fields to this form to continue.'])
                         @endif
@@ -226,20 +256,20 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <form action="#" method="POST">
+                <form action="{{ route('admin.forms.fields.store', $form->id) }}" method="POST">
                     <div class="modal-body">
                         @csrf
 
                         <div class="row">
                             <div class="form-group col-6">
                                 <label for="label">Label</label>
-                                <input type="text" class="form-control" name="label" id="label" placeholder="Label" onchange="generateFieldId(this)" required>
+                                <input type="text" class="form-control" name="label" id="label" placeholder="Label" onchange="generateFieldId(this.value)" required>
                                 <small class="form-text text-muted">Label of the field i.e "Email"</small>
                             </div>
 
                             <div class="form-group col-6">
                                 <label for="label">Identifier</label>
-                                <input type="text" class="form-control" name="name" id="name" placeholder="Identifier" required>
+                                <input type="text" class="form-control" name="name" id="field_name" placeholder="Identifier" required>
                                 <small class="form-text text-muted">Identifier of field (Leave as default if unsure)</small>
                             </div>
                         </div>
@@ -253,19 +283,30 @@
                         <div class="form-group">
                             <label for="type">Field Type</label>
                             <div class="input-group mb-2">
-                                <select class="form-control select2 select2-hidden-accessible" name="type" tabindex="-1" aria-hidden="true" required>
+                                <select class="form-control select2 select2-hidden-accessible" onchange="fieldTypeUpdated(this.value)" name="type" tabindex="-1" aria-hidden="true" required>
                                     <option value="text">Text</option>
                                     <option value="textarea">Textarea</option>
                                     <option value="select">Select</option>
-                                    <option value="checkbox">Checkbox</option>
                                     <option value="radio">Radio</option>
                                     <option value="email">Email</option>
                                     <option value="number">Number</option>
                                     <option value="date">Date</option>
+                                    <option value="url">Url</option>
                                     <option value="password">Password</option>
                                 </select>
                                 <small class="form-text text-muted">Select field type</small>
                             </div>
+                        </div>
+
+                        <div id="options_div" style="display: none">
+                            <hr>
+                            <div class="form-group">
+                                <label for="options">Options</label>
+                                <input type="text" class="form-control mt-2" name="options[]" id="options" placeholder="Option">
+                                <div id="more_options"></div>
+                                <small class="form-text text-success" onclick="addFieldOption()" style="cursor: pointer;">Add option</small>
+                            </div>
+                            <hr>
                         </div>
 
                         <div class="form-group">
@@ -285,18 +326,18 @@
                             <input type="text" class="form-control" name="rules" id="rules" placeholder="rules">
                             <small class="form-text text-muted">Validation rules help you make sure that the correct data is entered. For example, to make this field required use "required" </small>
                             <div>
-                                <button type="button" onclick="appendRule('required')" class="btn btn-sm btn-light">required</button>
-                                <button type="button" onclick="appendRule('numeric')" class="btn btn-sm btn-light">numeric</button>
-                                <button type="button" onclick="appendRule('email')" class="btn btn-sm btn-light">email</button>
-                                <button type="button" onclick="appendRule('active_url')" class="btn btn-sm btn-light">active url</button>
-                                <button type="button" onclick="appendRule('url')" class="btn btn-sm btn-light">url</button>
-                                <button type="button" onclick="appendRule('date')" class="btn btn-sm btn-light">date</button>
-                                <button type="button" onclick="appendRule('min:3')" class="btn btn-sm btn-light">min chars</button>
-                                <button type="button" onclick="appendRule('max:255')" class="btn btn-sm btn-light">max chars</button>
-                                <button type="button" onclick="appendRule('in:audi,bmw,mercedes')" class="btn btn-sm btn-light">in list</button>
-                                <button type="button" onclick="appendRule('starts_with:test')" class="btn btn-sm btn-light">stars with</button>
-                                <button type="button" onclick="appendRule('ends_with:test')" class="btn btn-sm btn-light">ends with</button>
-                                <button type="button" onclick="appendRule('date')" class="btn btn-sm btn-light">date</button>
+                                <button type="button" onclick="appendRule('required')" class="btn btn-sm btn-primary">required</button>
+                                <button type="button" onclick="appendRule('numeric')" class="btn btn-sm btn-primary">numeric</button>
+                                <button type="button" onclick="appendRule('email')" class="btn btn-sm btn-primary">email</button>
+                                <button type="button" onclick="appendRule('active_url')" class="btn btn-sm btn-primary">active url</button>
+                                <button type="button" onclick="appendRule('url')" class="btn btn-sm btn-primary">url</button>
+                                <button type="button" onclick="appendRule('date')" class="btn btn-sm btn-primary">date</button>
+                                <button type="button" onclick="appendRule('min:3')" class="btn btn-sm btn-primary">min chars</button>
+                                <button type="button" onclick="appendRule('max:255')" class="btn btn-sm btn-primary">max chars</button>
+                                <button type="button" onclick="appendRule('in:audi,bmw,mercedes')" class="btn btn-sm btn-primary">in list</button>
+                                <button type="button" onclick="appendRule('starts_with:test')" class="btn btn-sm btn-primary">stars with</button>
+                                <button type="button" onclick="appendRule('ends_with:test')" class="btn btn-sm btn-primary">ends with</button>
+                                <button type="button" onclick="appendRule('date')" class="btn btn-sm btn-primary">date</button>
                             </div>
                             <small class="form-text text-muted">View all <a href="https://laravel.com/docs/11.x/validation#available-validation-rules" target="_blank">validation rules</a> </small>
 
@@ -334,6 +375,28 @@
             }
         }
 
+
+        function generateFieldId(value) {
+            var name = document.getElementById('field_name');
+            name.value = value
+                        .toLowerCase() // convert to lowercase
+                        .trim() // remove leading and trailing whitespace
+                        .replace(/[^\w\s-]/g, '') // remove non-word characters
+                        .replace(/[\s_-]+/g, '_') // replace spaces, underscores, and hyphens with a single hyphen
+                        .replace(/^-+|-+$/g, ''); // remove leading and trailing hyphens
+        }
+        
+        function fieldTypeUpdated(value)
+        {
+            if(value == 'select' || value == 'radio') {
+                // set display to ''
+                document.getElementById('options_div').style.display = '';
+            } else {
+                // set display to none
+                document.getElementById('options_div').style.display = 'none';
+            }
+        }
+
         function appendRule(rule)
         {
             var rules = document.getElementById('rules');
@@ -353,6 +416,19 @@
             } else {
                 rules.value = rule;
             }
+
+        }
+
+        function addFieldOption()
+        {
+            // duplicate the options field
+            var options = document.getElementById('options');
+            var options_div = document.getElementById('more_options');
+
+            var new_options = options.cloneNode(true);
+            new_options.value = '';
+            options_div.appendChild(new_options);
+            
 
         }
 

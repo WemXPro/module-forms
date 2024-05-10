@@ -22,10 +22,12 @@ Route::prefix('/admin/forms')->middleware('permission')->group(function () {
     Route::get('/{form}/edit', [Admin\FormsController::class, 'edit'])->name('admin.forms.edit');
     Route::post('/{form}/update', [Admin\FormsController::class, 'update'])->name('admin.forms.update');
 
-    Route::post('/fields/store', [Admin\FormsController::class, 'storeField'])->name('admin.forms.fields.store');
+    Route::post('/{form}/fields/store', [Admin\FormsController::class, 'storeField'])->name('admin.forms.fields.store');
 
 });
 
-Route::prefix(config('forms.route_prefix'))->group(function(){
+Route::prefix(config('forms.route_prefix', 'forms'))->group(function(){
     Route::get('/{form:slug}', [Client\FormsController::class, 'view'])->name('forms.view');
+    Route::post('/{form:slug}', [Client\FormsController::class, 'submit'])->name('forms.submit');
+    Route::get('/submissions/{submission:token}', [Client\FormsController::class, 'viewSubmission'])->name('forms.view-submission');
 });

@@ -103,4 +103,31 @@ class FormsController extends Controller
 
         return redirect()->back()->withSuccess('Form updated successfully.');
     }
+
+    public function storeField(Request $request, Form $form)
+    {
+        $request->validate([
+            'type' => 'required',
+            'label' => 'required',
+            'name' => 'required',
+            'description' => 'nullable',
+            'options' => 'nullable|array',
+            'placeholder' => 'nullable',
+            'default_value' => 'nullable',
+            'rules' => 'nullable',
+        ]);
+
+        $field = $form->fields()->create([
+            'type' => $request->get('type'),
+            'label' => $request->get('label'),
+            'name' => $request->get('name'),
+            'description' => $request->get('description'),
+            'options' => $request->get('options', []),
+            'placeholder' => $request->get('placeholder'),
+            'default_value' => $request->get('default_value'),
+            'rules' => $request->get('rules'),
+        ]);
+
+        return redirect()->back()->withSuccess('Field created successfully.');
+    }
 }

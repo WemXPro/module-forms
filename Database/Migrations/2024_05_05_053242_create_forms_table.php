@@ -52,19 +52,13 @@ return new class extends Migration
             $table->unique(['name', 'form_id']);
         });
 
-        Schema::create('module_forms_statuses', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('color');
-            $table->boolean('is_default')->default(false);
-            $table->timestamps();
-        });
-
         Schema::create('module_forms_submissions', function (Blueprint $table) {
             $table->id();
+            $table->uuid('token')->unique();
             $table->unsignedBigInteger('form_id');
-            $table->unsignedBigInteger('status_id');
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('guest_email')->nullable();
+            $table->string('status');
             $table->text('ip_address');
             $table->text('user_agent');
             $table->json('data');
@@ -72,7 +66,19 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('form_id')->references('id')->on('module_forms')->onDelete('cascade');
-            $table->foreign('status_id')->references('id')->on('module_forms_statuses')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+        });
+
+        Schema::create('module_forms_submissions_messages', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('submission_id');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('guest_email')->nullable();
+            $table->text('ip_address');
+            $table->text('user_agent');
+            $table->text('message');
+            $table->timestamps();
+
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
     }
@@ -84,7 +90,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('module_forms');
         Schema::dropIfExists('module_forms_fields');
-        Schema::dropIfExists('module_forms_statuses');
         Schema::dropIfExists('module_forms_submissions');
     }
 };
