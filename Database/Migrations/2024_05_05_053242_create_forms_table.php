@@ -91,5 +91,6 @@ return new class extends Migration
         Schema::dropIfExists('module_forms');
         Schema::dropIfExists('module_forms_fields');
         Schema::dropIfExists('module_forms_submissions');
+        Schema::dropIfExists('module_forms_submissions_messages');
     }
 };

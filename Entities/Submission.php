@@ -46,6 +46,9 @@ class Submission extends Model
         return $this->belongsTo(User::class);
     }
 
-
+    public function email()
+    {
+        return $this->guest_email ?? $this->user->email;
+    }
 }
 

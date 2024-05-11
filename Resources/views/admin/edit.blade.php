@@ -12,12 +12,6 @@
 
 @section('container')
     <section class="section">
-        @if($form->guest AND $form->can_view_submission AND !$form->fields()->whereType('email')->exists())
-            <div class="alert alert-danger">
-                <strong>Warning!</strong> This form is set to allow guests to view their submission, but it does not have an email field. Please add an email field to this form to allow guests to view their submission.
-            </div>
-        @endif
-
         <div class="section-body">
             <div class="col-12">
                 <div class="card">
@@ -140,7 +134,7 @@
                                         class="form-control select2 select2-hidden-accessible" multiple="" tabindex="-1"
                                         aria-hidden="true">
                                         @foreach (Package::get() as $package)
-                                            <option value="{{ $package->id }}" @if(in_array($package->id, $form->required_packages)) selected @endif>{{ $package->name }}</option>
+                                            <option value="{{ $package->id }}" @if(in_array($package->id, $form->required_packages ?? [])) selected @endif>{{ $package->name }}</option>
                                         @endforeach
 
                                     </select>
@@ -178,7 +172,7 @@
                                                 @if(!$gateway->status)
                                                     @continue
                                                 @endif
-                                                <option value="{{ $gateway->id }}" @if(in_array($gateway->id, $form->allowed_gateways)) selected @endif>{{ $gateway->name }}</option>
+                                                <option value="{{ $gateway->id }}" @if(in_array($gateway->id, $form->allowed_gateways ?? [])) selected @endif>{{ $gateway->name }}</option>
                                             @endforeach
                                         </select>
                                         <small class="form-text text-muted">Select the gateways allowed to pay with</small>

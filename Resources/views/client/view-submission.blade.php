@@ -52,6 +52,7 @@
             </dl>
         </div>        
 
+        @if($submission->form->can_respond)
         <form id="comment-form" action="#" method="POST">
             @csrf
             @includeIf(Theme::moduleView('tickets', 'components.editor'))
@@ -63,6 +64,7 @@
                 <button type="submit" id="post_comment" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2 me-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">Comment</button>
             </div>
         </form>
+        @endif
 
     </div>
     <div class="w-1/3 md:w-1/4 pr-4 pl-4 sm:w-full pr-4 pl-4">
@@ -110,7 +112,8 @@
                     Open
                 </a>
            </li>
-            @if(auth()->user()->is_admin())
+           @auth
+            @if(auth()->user()->isAdmin())
             <li class="flex items-center mb-2">
                 <a href="#" target="_blank" class="hover:underline hover:cursor-pointer">
                     <span class="text-gray-500 dark:text-gray-400 flex-shrink-0">
@@ -128,6 +131,7 @@
                 </a>
             </li>
             @endif
+            @endauth
         </ul>
 
     </div>
