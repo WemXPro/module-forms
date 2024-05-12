@@ -27,7 +27,7 @@ Route::prefix('/admin/forms')->middleware('permission')->group(function () {
     Route::get('/fields/{field}/down', [Admin\FormsController::class, 'fieldDown'])->name('admin.forms.fields.down');
     Route::get('/fields/{field}/delete', [Admin\FormsController::class, 'destroyField'])->name('admin.forms.fields.destroy');
     Route::post('/fields/{form}/fields/store', [Admin\FormsController::class, 'storeField'])->name('admin.forms.fields.store');
-    Route::post('/fields/{form}/fields/update', [Admin\FormsController::class, 'updateField'])->name('admin.forms.fields.update');
+    Route::post('/fields/{field}/fields/update', [Admin\FormsController::class, 'updateField'])->name('admin.forms.fields.update');
 
     Route::get('/submissions', [Admin\FormsController::class, 'submissions'])->name('admin.forms.submissions.index');
 

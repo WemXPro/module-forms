@@ -149,6 +149,33 @@ class FormsController extends Controller
         return redirect()->back()->withSuccess('Field created successfully.');
     }
 
+    public function updateField(Request $request, FormField $field)
+    {
+        $request->validate([
+            'type' => 'required',
+            'label' => 'required',
+            'name' => 'required',
+            'description' => 'nullable',
+            'options' => 'nullable|array',
+            'placeholder' => 'nullable',
+            'default_value' => 'nullable',
+            'rules' => 'nullable',
+        ]);
+
+        $field->update([
+            'type' => $request->get('type'),
+            'label' => $request->get('label'),
+            'name' => $request->get('name'),
+            'description' => $request->get('description'),
+            'options' => $request->get('options', []),
+            'placeholder' => $request->get('placeholder'),
+            'default_value' => $request->get('default_value'),
+            'rules' => $request->get('rules'),
+        ]);
+
+        return redirect()->back()->withSuccess('Field updated successfully.');
+    }
+
     public function fieldUp(FormField $field)
     {
         $field->up();

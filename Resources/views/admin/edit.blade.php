@@ -1,12 +1,10 @@
 @extends(AdminTheme::wrapper(), ['title' => __('Forms'), 'keywords' => 'WemX Dashboard, WemX Panel'])
 
 @section('css_libraries')
-    <link rel="stylesheet" href="{{ asset(AdminTheme::assets('modules/summernote/summernote-bs4.css')) }}" />
     <link rel="stylesheet" href="{{ asset(AdminTheme::assets('modules/select2/dist/css/select2.min.css')) }}">
 @endsection
 
 @section('js_libraries')
-    <script src="{{ asset(AdminTheme::assets('modules/summernote/summernote-bs4.js')) }}"></script>
     <script src="{{ asset(AdminTheme::assets('modules/select2/dist/js/select2.full.min.js')) }}"></script>
 @endsection
 
@@ -67,113 +65,6 @@
 
                                 </tbody>
                             </table>
-                        </div>
-                        {{-- edit field modal --}}
-                        <div class="modal fade show" id="editFieldModal{{ $field->id }}" tabindex="-1" role="dialog" aria-labelledby="editFieldModal{{ $field->id }}Label">
-                            <div class="modal-dialog modal-lg" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="editFieldModal{{ $field->id }}Label">{{ $field->label }}</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">×</span>
-                                        </button>
-                                    </div>
-                                    <form action="{{ route('admin.forms.fields.update', $form->id) }}" method="POST">
-                                        <div class="modal-body">
-                                            @csrf
-
-                                            <div class="row">
-                                                <div class="form-group col-6">
-                                                    <label for="label">Label</label>
-                                                    <input type="text" class="form-control" name="label" value="{{ $field->label }}" id="label" placeholder="Label" onchange="generateFieldId(this.value)" required>
-                                                    <small class="form-text text-muted">Label of the field i.e "Email"</small>
-                                                </div>
-
-                                                <div class="form-group col-6">
-                                                    <label for="label">Identifier</label>
-                                                    <input type="text" class="form-control" name="name" value="{{ $field->name }}" id="field_name{{ $field->id }}" placeholder="Identifier" required>
-                                                    <small class="form-text text-muted">Identifier of field (Leave as default if unsure)</small>
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label for="description">Description (optional)</label>
-                                                <input type="text" class="form-control" name="description" value="{{ $field->description }}" id="description" placeholder="Description">
-                                                <small class="form-text text-muted">Short description of what the input field is for</small>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label for="type">Field Type</label>
-                                                <div class="input-group mb-2">
-                                                    <select class="form-control select2 select2-hidden-accessible" onchange="fieldTypeUpdated(this.value, '{{$field->id}}')" name="type" tabindex="-1" aria-hidden="true" required>
-                                                        <option value="text" @if($field->type == 'text') selected @endif>Text</option>
-                                                        <option value="textarea" @if($field->type == 'textarea') selected @endif>Textarea</option>
-                                                        <option value="select" @if($field->type == 'select') selected @endif>Select</option>
-                                                        <option value="radio" @if($field->type == 'radio') selected @endif>Radio</option>
-                                                        <option value="email" @if($field->type == 'email') selected @endif>Email</option>
-                                                        <option value="number" @if($field->type == 'number') selected @endif>Number</option>
-                                                        <option value="date" @if($field->type == 'date') selected @endif>Date</option>
-                                                        <option value="url" @if($field->type == 'url') selected @endif>Url</option>
-                                                        <option value="password" @if($field->type == 'password') selected @endif>Password</option>
-                                                    </select>
-                                                    <small class="form-text text-muted">Select field type</small>
-                                                </div>
-                                            </div>
-
-                                            <div id="options_div{{$field->id}}" style="display: none">
-                                                <hr>
-                                                <div class="form-group">
-                                                    <label for="options">Options</label>
-                                                    <input type="text" class="form-control mt-2" name="options[]" id="options{{$field->id}}" placeholder="Option">
-                                                    <div id="more_options{{$field->id}}"></div>
-                                                    <small class="form-text text-success" onclick="addFieldOption('{{$field->id}}')" style="cursor: pointer;">Add option</small>
-                                                </div>
-                                                <hr>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label for="placeholder">Placeholder</label>
-                                                <input type="text" class="form-control" name="placeholder" value="{{$field->placeholder}}" id="placeholder" placeholder="Placeholder">
-                                                <small class="form-text text-muted">The placeholder text for this field</small>
-                                            </div>
-                                            
-                                            <div class="form-group">
-                                                <label for="default_value">Default Value (optional)</label>
-                                                <input type="text" class="form-control" name="default_value" value="{{$field->default_value}}" id="default_value" placeholder="Default Value">
-                                                <small class="form-text text-muted">Default Value of this field</small>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label for="rules">Validation Rules</label>
-                                                <input type="text" class="form-control" name="rules" id="rules" placeholder="rules">
-                                                <small class="form-text text-muted">Validation rules help you make sure that the correct data is entered. For example, to make this field required use "required" </small>
-                                                <div>
-                                                    <button type="button" onclick="appendRule('required', '{{$field->id}}')" class="btn btn-sm btn-primary">required</button>
-                                                    <button type="button" onclick="appendRule('numeric', '{{$field->id}}')" class="btn btn-sm btn-primary">numeric</button>
-                                                    <button type="button" onclick="appendRule('email', '{{$field->id}}')" class="btn btn-sm btn-primary">email</button>
-                                                    <button type="button" onclick="appendRule('active_url', '{{$field->id}}')" class="btn btn-sm btn-primary">active url</button>
-                                                    <button type="button" onclick="appendRule('url', '{{$field->id}}')" class="btn btn-sm btn-primary">url</button>
-                                                    <button type="button" onclick="appendRule('date', '{{$field->id}}')" class="btn btn-sm btn-primary">date</button>
-                                                    <button type="button" onclick="appendRule('min:3', '{{$field->id}}')" class="btn btn-sm btn-primary">min chars</button>
-                                                    <button type="button" onclick="appendRule('max:255', '{{$field->id}}')" class="btn btn-sm btn-primary">max chars</button>
-                                                    <button type="button" onclick="appendRule('in:audi,bmw,mercedes', '{{$field->id}}')" class="btn btn-sm btn-primary">in list</button>
-                                                    <button type="button" onclick="appendRule('starts_with:test', '{{$field->id}}')" class="btn btn-sm btn-primary">stars with</button>
-                                                    <button type="button" onclick="appendRule('ends_with:test', '{{$field->id}}')" class="btn btn-sm btn-primary">ends with</button>
-                                                    <button type="button" onclick="appendRule('date', '{{$field->id}}')" class="btn btn-sm btn-primary">date</button>
-                                                </div>
-                                                <small class="form-text text-muted">View all <a href="https://laravel.com/docs/11.x/validation#available-validation-rules" target="_blank">validation rules</a> </small>
-
-                                            </div>
-
-
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-primary">send</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
                         </div>
                         @else 
                             @include(AdminTheme::path('empty-state'), ['title' => 'No Fields', 'description' => 'This form has no fields. Please add some fields to this form to continue.'])
@@ -349,7 +240,7 @@
     </section>
 
     {{-- create field modal --}}
-    <div class="modal fade show" id="createFieldModal" tabindex="-1" role="dialog" aria-labelledby="createFieldModalLabel">
+    <div class="modal fade" id="createFieldModal" tabindex="-1" role="dialog" aria-labelledby="createFieldModalLabel">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -404,9 +295,13 @@
                             <hr>
                             <div class="form-group">
                                 <label for="options">Options</label>
-                                <input type="text" class="form-control mt-2" name="options[]" id="options0" placeholder="Option">
-                                <div id="more_options0"></div>
-                                <small class="form-text text-success" onclick="addFieldOption()" style="cursor: pointer;">Add option</small>
+                                <div id="more_options0">
+                                    <input type="text" class="form-control mt-2" name="options[]" id="options0" placeholder="Option">
+                                </div>
+                                <div class="d-flex">
+                                    <small class="form-text text-success mr-2" onclick="addFieldOption()" style="cursor: pointer;">Add option</small>
+                                    <small class="form-text text-danger" onclick="removeFieldOption()" style="cursor: pointer;">Remove option</small>
+                                </div>
                             </div>
                             <hr>
                         </div>
@@ -456,6 +351,121 @@
         </div>
     </div>
     
+    @foreach($form->fields()->orderBy('order', 'desc')->get() as $field)
+    {{-- edit field modal --}}
+    <div class="modal fade" id="editFieldModal{{ $field->id }}" tabindex="-1" role="dialog" aria-labelledby="editFieldModal{{ $field->id }}Label">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editFieldModal{{ $field->id }}Label">{{ $field->label }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form action="{{ route('admin.forms.fields.update', $form->id) }}" method="POST">
+                    <div class="modal-body">
+                        @csrf
+
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label for="label">Label</label>
+                                <input type="text" class="form-control" name="label" value="{{ $field->label }}" id="label" placeholder="Label" onchange="generateFieldId(this.value, '{{ $field->id }}')" required>
+                                <small class="form-text text-muted">Label of the field i.e "Email"</small>
+                            </div>
+
+                            <div class="form-group col-6">
+                                <label for="label">Identifier</label>
+                                <input type="text" class="form-control" name="name" value="{{ $field->name }}" id="field_name{{ $field->id }}" placeholder="Identifier" required>
+                                <small class="form-text text-muted">Identifier of field (Leave as default if unsure)</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description (optional)</label>
+                            <input type="text" class="form-control" name="description" value="{{ $field->description }}" id="description" placeholder="Description">
+                            <small class="form-text text-muted">Short description of what the input field is for</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="type">Field Type</label>
+                            <div class="input-group mb-2">
+                                <select class="form-control select2 select2-hidden-accessible" onchange="fieldTypeUpdated(this.value, '{{$field->id}}')" name="type" tabindex="-1" aria-hidden="true" required>
+                                    <option value="text" @if($field->type == 'text') selected @endif>Text</option>
+                                    <option value="textarea" @if($field->type == 'textarea') selected @endif>Textarea</option>
+                                    <option value="select" @if($field->type == 'select') selected @endif>Select</option>
+                                    <option value="radio" @if($field->type == 'radio') selected @endif>Radio</option>
+                                    <option value="email" @if($field->type == 'email') selected @endif>Email</option>
+                                    <option value="number" @if($field->type == 'number') selected @endif>Number</option>
+                                    <option value="date" @if($field->type == 'date') selected @endif>Date</option>
+                                    <option value="url" @if($field->type == 'url') selected @endif>Url</option>
+                                    <option value="password" @if($field->type == 'password') selected @endif>Password</option>
+                                </select>
+                                <small class="form-text text-muted">Select field type</small>
+                            </div>
+                        </div>
+
+                        <div id="options_div{{$field->id}}" @if(!in_array($field->type, ['select', 'radio'])) style="display: none" @endif>
+                            <hr>
+                            <div class="form-group">
+                                <label for="options">Options</label>
+                                <div id="more_options{{$field->id}}">
+                                    @foreach($field->options ?? [] as $option)
+                                        <input type="text" class="form-control mt-2" name="options[]" id="options{{$field->id}}" value="{{ $option }}" placeholder="Option">
+                                    @endforeach
+                                </div>
+                                <div class="d-flex">
+                                    <small class="form-text text-success mr-2" onclick="addFieldOption('{{$field->id}}')" style="cursor: pointer;">Add option</small>
+                                    <small class="form-text text-danger" onclick="removeFieldOption('{{$field->id}}')" style="cursor: pointer;">Remove option</small>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="placeholder">Placeholder</label>
+                            <input type="text" class="form-control" name="placeholder" value="{{$field->placeholder}}" id="placeholder" placeholder="Placeholder">
+                            <small class="form-text text-muted">The placeholder text for this field</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="default_value">Default Value (optional)</label>
+                            <input type="text" class="form-control" name="default_value" value="{{$field->default_value}}" id="default_value" placeholder="Default Value">
+                            <small class="form-text text-muted">Default Value of this field</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="rules">Validation Rules</label>
+                            <input type="text" class="form-control" value="{{ $field->rules }}" name="rules" id="rules{{ $field->id }}" placeholder="rules">
+                            <small class="form-text text-muted">Validation rules help you make sure that the correct data is entered. For example, to make this field required use "required" </small>
+                            <div>
+                                <button type="button" onclick="appendRule('required', '{{$field->id}}')" class="btn btn-sm btn-primary">required</button>
+                                <button type="button" onclick="appendRule('numeric', '{{$field->id}}')" class="btn btn-sm btn-primary">numeric</button>
+                                <button type="button" onclick="appendRule('email', '{{$field->id}}')" class="btn btn-sm btn-primary">email</button>
+                                <button type="button" onclick="appendRule('active_url', '{{$field->id}}')" class="btn btn-sm btn-primary">active url</button>
+                                <button type="button" onclick="appendRule('url', '{{$field->id}}')" class="btn btn-sm btn-primary">url</button>
+                                <button type="button" onclick="appendRule('date', '{{$field->id}}')" class="btn btn-sm btn-primary">date</button>
+                                <button type="button" onclick="appendRule('min:3', '{{$field->id}}')" class="btn btn-sm btn-primary">min chars</button>
+                                <button type="button" onclick="appendRule('max:255', '{{$field->id}}')" class="btn btn-sm btn-primary">max chars</button>
+                                <button type="button" onclick="appendRule('in:audi,bmw,mercedes', '{{$field->id}}')" class="btn btn-sm btn-primary">in list</button>
+                                <button type="button" onclick="appendRule('starts_with:test', '{{$field->id}}')" class="btn btn-sm btn-primary">stars with</button>
+                                <button type="button" onclick="appendRule('ends_with:test', '{{$field->id}}')" class="btn btn-sm btn-primary">ends with</button>
+                                <button type="button" onclick="appendRule('date', '{{$field->id}}')" class="btn btn-sm btn-primary">date</button>
+                            </div>
+                            <small class="form-text text-muted">View all <a href="https://laravel.com/docs/11.x/validation#available-validation-rules" target="_blank">validation rules</a> </small>
+
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endforeach
 
     <script>
         showInfoAlert();
@@ -544,7 +554,18 @@
             var new_options = options.cloneNode(true);
             new_options.value = '';
             options_div.appendChild(new_options);
-            
+        }
+
+        function removeFieldOption(id = 0)
+        {
+            // remove the last options field
+            var options_div = document.getElementById('more_options' + id);
+
+            if (options_div.children.length == 1) {
+                return;
+            }
+
+            options_div.removeChild(options_div.lastChild);
 
         }
 
