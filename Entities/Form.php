@@ -63,6 +63,6 @@ class Form extends Model
 
     public function fieldRules()
     {
-        return $this->fields->pluck('rules', 'name')->toArray();
+        return $this->fields->pluck('rules', 'name')->toArray() ?? [];
     }
 }
