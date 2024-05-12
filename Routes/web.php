@@ -43,4 +43,5 @@ Route::prefix(config('forms.route_prefix', 'forms'))->group(function(){
         Route::post('/submissions/{submission:token}/update', [Client\FormsController::class, 'updateSubmission'])->name('forms.submissions.update');
 
     });
+    Route::post('/submissions/{submission:token}/message', [Client\FormsController::class, 'postMessage'])->name('forms.view-submission.post-message');
 });

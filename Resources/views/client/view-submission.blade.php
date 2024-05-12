@@ -106,14 +106,52 @@
                 </div>
                 @endforeach
             </dl>
-        </div>        
+        </div>
+
+        <ol class="relative border-s border-gray-200 dark:border-gray-700">
+        @foreach($submission->messages()->oldest()->get() as $message)
+        <li class="mb-10 ms-6">
+            <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                @if($message->user)
+                <img class="rounded-full shadow-lg" src="{{ $message->user->avatar() }}" alt="{{ $message->user->username }}"/>
+                @else
+                <div class="relative inline-flex border border-gray-500 items-center justify-center mt-0.5 w-6 h-6 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                    <span class="font-medium text-gray-600 dark:text-gray-300">{{ substr($submission->email(), 0, 2) }}</span>
+                </div>
+                @endif
+            </span>
+            <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-600">
+                <div class="items-center justify-between mb-3 sm:flex">
+                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $message->created_at->diffForHumans() }}</time>
+                    @if($message->user)
+                    <div class="text-sm font-normal text-gray-800 lex dark:text-gray-300 capitalize">
+                        <strong>{{ $message->user->username }}</strong> 
+                        @if($message->user->is_admin()) 
+                        <span class="bg-emerald-100 text-emerald-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-emerald-900 dark:text-emerald-300">Support Team</span>
+                        @endif
+                    </div>
+                    @else
+                    <div class="text-sm font-normal text-gray-800 lex dark:text-gray-300 capitalize">
+                        <strong>{{ $message->guest_email }}</strong> 
+                    </div>
+                    @endif
+                </div>
+                <div class="">
+                    <div class="format min-w-fit format-sm sm:format-base text-sm text-gray-700 dark:text-gray-300 lg:format-sm format-blue dark:format-invert">
+                        {{ $message->message }}
+                    </div>
+                </div>
+            </div>
+        </li>
+        @endforeach
+        </ol>
 
         @if($submission->form->can_respond)
-        <form id="comment-form" action="#" method="POST">
+        <form id="comment-form" action="{{ route('forms.view-submission.post-message', $submission->token) }}" method="POST">
             @csrf
             <div class="sm:col-span-2 mb-6">
-                <textarea name="message" id="message" rows="3"
-                        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">{{old('description')}}</textarea>
+                <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your message</label>
+                <textarea required="" name="message" id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your thoughts here..."></textarea>                
             </div>
             <div class="text-right mb-4">
                 <button type="submit" id="post_comment" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2 me-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">Comment</button>
@@ -140,7 +178,15 @@
             <div class="flex flex-col py-3">
                 <dt class="mb-1 text-gray-500 md:text-md dark:text-gray-400">Status</dt>
                 <dd class="text-lg font-semibold">
-                    {{ $submission->status }}
+                    @if($submission->status == 'open')
+                        <span class="bg-green-100 text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">{{ $submission->status }}</span>
+                    @elseif($submission->status == 'closed')
+                        <span class="bg-red-100 text-red-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">{{ $submission->status }}</span>
+                    @elseif($submission->status == 'awaiting_payment')
+                        <span class="bg-red-100 text-red-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Awaiting Payment</span>
+                    @else
+                        <span class="bg-blue-100 text-blue-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{{ $submission->status }}</span>
+                    @endif
                 </dd>
             </div>
             <div class="flex flex-col pt-3">

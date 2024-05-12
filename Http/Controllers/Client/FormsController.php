@@ -126,4 +126,25 @@ class FormsController extends Controller
 
         return redirect()->back()->withSuccess('Submission updated successfully.');
     }
+
+    public function postMessage(Request $request, Submission $submission)
+    {
+        if(!$submission->form->can_respond) {
+            return redirect()->back()->withError('This form does not allow responses.');
+        }
+
+        $request->validate([
+            'message' => 'required|min:3|max:5000',
+        ]);
+
+        $message = $submission->messages()->create([
+            'user_id' => auth()->id() ?? null,
+            'guest_email' => auth()->guest() ? $submission->guest_email : null,
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'message' => $request->get('message'),
+        ]);
+
+        return redirect()->back();
+    }
 }
