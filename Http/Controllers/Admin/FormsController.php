@@ -5,7 +5,10 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Routing\Controller;
 use Nwidart\Modules\Facades\Module;
 use Modules\Forms\Entities\Form;
+use Modules\Forms\Entities\FormField;
+use Modules\Forms\Entities\Submission;
 use Illuminate\Http\Request;
+
 
 class FormsController extends Controller
 {
@@ -13,6 +16,19 @@ class FormsController extends Controller
     {
         $forms = Form::paginate(10);
         return view('forms::admin.index', compact('forms'));
+    }
+
+    public function submissions()
+    {
+        $submissions = Submission::query();
+
+        if(request()->has('form_id')) {
+            $submissions->where('form_id', request()->get('form_id'));
+        }
+
+        $submissions = $submissions->paginate(10);
+
+        return view('forms::admin.submissions', compact('submissions'));
     }
 
     public function create()
@@ -33,7 +49,6 @@ class FormsController extends Controller
             'required_packages' => 'nullable|array',
             'allowed_gateways' => 'nullable|array',
             'price' => 'nullable|numeric',
-            'recaptcha' => 'nullable|boolean',
             'guest' => 'nullable|boolean',
             'can_view_submission' => 'nullable|boolean',
             'can_respond' => 'nullable|boolean',            
@@ -50,13 +65,12 @@ class FormsController extends Controller
             'required_packages' => $request->get('required_packages'),
             'allowed_gateways' => $request->get('allowed_gateways'),
             'price' => $request->get('price', 0),
-            'recaptcha' => $request->get('recaptcha', false),
             'guest' => $request->get('guest', false),
             'can_view_submission' => $request->get('can_view_submission', false),
             'can_respond' => $request->get('can_respond', false),
         ]);
 
-        return redirect()->route('admin.forms.index')->withSuccess('Form created successfully.');
+        return redirect()->route('admin.forms.edit', $form->id)->withSuccess('Form created successfully.');
     }
 
     public function edit(Form $form)
@@ -78,7 +92,6 @@ class FormsController extends Controller
             'required_packages' => 'nullable|array',
             'allowed_gateways' => 'nullable|array',
             'price' => 'nullable|numeric',
-            'recaptcha' => 'boolean',
             'guest' => 'boolean',
             'can_view_submission' => 'boolean',
             'can_respond' => 'boolean',         
@@ -95,13 +108,18 @@ class FormsController extends Controller
             'required_packages' => $request->get('required_packages', null),
             'allowed_gateways' => $request->get('allowed_gateways', null),
             'price' => $request->get('price', 0),
-            'recaptcha' => $request->get('recaptcha', false),
             'guest' => $request->get('guest', false),
             'can_view_submission' => $request->get('can_view_submission', false),
             'can_respond' => $request->get('can_respond', false),
         ]);
 
         return redirect()->back()->withSuccess('Form updated successfully.');
+    }
+
+    public function destroy(Form $form)
+    {
+        $form->delete();
+        return redirect()->back()->withSuccess('Form deleted successfully.');
     }
 
     public function storeField(Request $request, Form $form)
@@ -129,5 +147,23 @@ class FormsController extends Controller
         ]);
 
         return redirect()->back()->withSuccess('Field created successfully.');
+    }
+
+    public function fieldUp(FormField $field)
+    {
+        $field->up();
+        return redirect()->back();
+    }
+
+    public function fieldDown(FormField $field)
+    {
+        $field->down();
+        return redirect()->back();
+    }
+
+    public function destroyField(FormField $field)
+    {
+        $field->delete();
+        return redirect()->back()->withSuccess('Field deleted successfully.');
     }
 }

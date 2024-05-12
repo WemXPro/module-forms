@@ -25,7 +25,7 @@ return [
                     ],
                     [
                         'name' => 'Submissions',
-                        'href' => '/admin/submissions',
+                        'href' => '/admin/forms/submissions',
                     ],
                 ],
             ],

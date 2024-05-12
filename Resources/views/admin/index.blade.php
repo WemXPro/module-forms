@@ -65,7 +65,7 @@
                                             </td>
 
                                             <td class="text-center">
-                                                <a href="#"
+                                                <a target="_blank" href="{{ route('admin.forms.submissions.index', ['form_id' => $form->id]) }}"
                                                     class="btn btn-success mr-2" title="{!! __('External') !!}">
                                                     <i class="fas fa-external-link-alt"></i>
                                                 </a>
@@ -73,7 +73,7 @@
                                                     class="btn btn-primary mr-2" title="{!! __('Edit') !!}">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <a href="#"
+                                                <a href="{{ route('admin.forms.destroy', $form->id) }}"
                                                     class="btn btn-danger mr-2" title="{!! __('Delete') !!}">
                                                     <i class="fas fa-trash-alt"></i>
                                                 </a>

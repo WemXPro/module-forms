@@ -163,17 +163,6 @@
                                         </span>
                                     </label>
                                 </div>
-
-                                <div class="form-group col-md-4 col-12">
-                                    <div class="control-label">Enable Recaptcha</div>
-                                    <label class="custom-switch mt-2">
-                                        <input type="checkbox" name="recaptcha" class="custom-switch-input" value="1" checked="" />
-                                        <span class="custom-switch-indicator"></span>
-                                        <span class="custom-switch-description">
-                                            Enable Recaptcha for this form?
-                                        </span>
-                                    </label>
-                                </div>
                                 
                             </div>
 

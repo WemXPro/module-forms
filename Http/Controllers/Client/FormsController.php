@@ -8,6 +8,9 @@ use Modules\Forms\Entities\Form;
 use Modules\Forms\Entities\Submission;
 use Illuminate\Http\Request;
 
+use App\Models\Gateways\Gateway;
+use App\Models\Payment;
+
 class FormsController extends Controller
 {
     public function view(Form $form)
@@ -21,6 +24,10 @@ class FormsController extends Controller
             if(!$hasOrder) {
                 return redirect()->route('dashboard')->withError('You must have the required package to view this page.');
             }
+        }
+
+        if($form->isPaid() AND auth()->guest()) {
+            return redirect()->route('login')->withError('You must be logged to complete the payment.');
         }
         
         return view('forms::client.view-form', compact('form'));
@@ -64,6 +71,8 @@ class FormsController extends Controller
             'paid' => false,
         ]);
 
+        $submission->notifyNewSubmission();
+
         if($form->can_view_submission) {
             return redirect()->route('forms.view-submission', $submission->token)->withSuccess('Form submitted successfully.');
         }
@@ -74,5 +83,47 @@ class FormsController extends Controller
     public function viewSubmission(Submission $submission)
     {
         return view('forms::client.view-submission', compact('submission'));
+    }
+
+    public function paySubmission(Request $request, Submission $submission)
+    {
+        if(!$submission->form->isPaid()) {
+            return redirect()->back()->withError('This form does not require payment.');
+        }
+
+        if($submission->paid) {
+            return redirect()->back()->withError('This submission has already been paid.');
+        }
+
+        $request->validate([
+            'gateway' => 'required|exists:gateways,id',
+        ]);
+
+        $gateway = Gateway::findOrFail($request->gateway);
+        $payment = Payment::generate([
+            'user_id' => auth()->user() ? auth()->id() : null,
+            'description' => $submission->form->name,
+            'amount' => $submission->form->price,
+            'options' => ['submission_id' => $submission->id],
+            'handler' => \Modules\Forms\Handlers\PaymentHandler::class,
+        ]);
+
+        return redirect()->route('invoice.pay', ['payment' => $payment->id, 'gateway' => request()->input('gateway')]);
+    }
+
+    public function updateSubmission(Request $request, Submission $submission)
+    {
+        $submission->status = $request->get('status');
+        $submission->save();
+
+        // send email to user
+        if($request->has('email')) {
+            $submission->emailUser([
+                'subject' => 'Your submission has been updated',
+                'content' => $request->get('email'),
+            ]);
+        }
+
+        return redirect()->back()->withSuccess('Submission updated successfully.');
     }
 }

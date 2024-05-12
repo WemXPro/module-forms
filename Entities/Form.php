@@ -19,7 +19,6 @@ class Form extends Model
         'notification_email',
         'max_submissions',
         'max_submissions_per_user',
-        'recaptcha',
         'guest',
         'can_view_submission',
         'can_respond',
@@ -40,7 +39,6 @@ class Form extends Model
         'guest' => false,
         'can_view_submission' => false,
         'can_respond' => false,
-        'recaptcha' => false,
     ];
 
     public function fields()

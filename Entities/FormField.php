@@ -24,5 +24,15 @@ class FormField extends Model
     protected $casts = [
         'options' => 'array',
     ];
+
+    public function up()
+    {
+        $this->increment('order');
+    }
+
+    public function down()
+    {
+        $this->decrement('order');
+    }
 }
 

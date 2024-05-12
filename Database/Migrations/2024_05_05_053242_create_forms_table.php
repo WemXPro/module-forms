@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('notification_email')->nullable();
             $table->integer('max_submissions')->default(0)->nullable();
             $table->integer('max_submissions_per_user')->default(0)->nullable();
-            $table->boolean('recaptcha')->default(false);
             $table->boolean('guest')->default(false);
             $table->boolean('can_view_submission')->default(true);
             $table->boolean('can_respond')->default(true);

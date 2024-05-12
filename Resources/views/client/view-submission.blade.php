@@ -41,6 +41,62 @@
 <div class="flex flex-wrap mt-6">
     <div class="w-3/4 md:w-3/4 pr-4 pl-4 sm:w-full pr-4 pl-4 mb-8">
 
+        @if(!$submission->form->can_view_submission AND auth()->user()->isAdmin())
+        <div class="flex items-center p-4 mb-4 text-sm text-gray-800 rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-gray-300" role="alert">
+            <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+            </svg>
+            <span class="sr-only">Info</span>
+            <div>
+              This submission is not visible to the user.
+            </div>
+          </div>
+        @endif
+
+        @if(!$submission->paid AND $submission->form->isPaid())
+        <div class="flex items-center p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
+            <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+            </svg>
+            <span class="sr-only">Info</span>
+            <div>
+                <p class="font-semibold">This submission is not paid yet.</p>
+                <p class="text-sm">Please pay the required amount to proceed.</p>
+            </div>
+        </div>
+
+        <div class="space-y-4 mb-4 rounded-lg border border-gray-100 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800">
+            <div class="space-y-2">
+                <dl class="flex items-center justify-between gap-4">
+                    <dt class="text-base font-normal text-gray-500 dark:text-gray-400">{{ __('client.price') }}</dt>
+                    <dd class="text-base font-medium text-gray-900 dark:text-white">{{ price($submission->form->price) }}</dd>
+                </dl>
+            </div>
+            <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
+
+            <form action="{{ route('forms.submissions.pay', $submission->token) }}" class="mx-auto" method="POST">
+                @csrf
+                <div class="mb-4">
+                    <label for="gateway" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ __('client.gateway') }}</label>
+                    <select id="gateway" name="gateway" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        @foreach(App\Models\Gateways\Gateway::get() as $gateway)
+                            @if(!in_array($gateway->id, $submission->form->allowed_gateways ?? []))
+                                @continue
+                            @endif
+                            <option value="{{ $gateway->id }}">{{ $gateway->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="flex justify-end">
+                    <button type="submit" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2 mb-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
+                        {{ __('client.pay') }}
+                    </button>
+                </div>
+            </form>
+  
+        </div>
+        @endif
+
         <div class="p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
             <dl class="text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700">
                 @foreach($submission->data as $key => $value)
@@ -55,7 +111,6 @@
         @if($submission->form->can_respond)
         <form id="comment-form" action="#" method="POST">
             @csrf
-            @includeIf(Theme::moduleView('tickets', 'components.editor'))
             <div class="sm:col-span-2 mb-6">
                 <textarea name="message" id="message" rows="3"
                         class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">{{old('description')}}</textarea>
@@ -98,30 +153,24 @@
 
         <h2 class="mb-2 text-lg font-semibold text-gray-900 dark:text-white">Actions</h2>
         <ul class="max-w-md space-y-2 text-gray-500 list-inside dark:text-gray-400">
-            <li class="flex items-center mb-2 hover:underline hover:cursor-pointer" data-drawer-target="drawer-right-update-ticket" data-drawer-show="drawer-right-update-ticket" data-drawer-placement="right" aria-controls="drawer-right-update-ticket">
+            <li class="flex items-center mb-2 hover:underline hover:cursor-pointer" data-modal-target="static-modal" data-modal-toggle="static-modal">
                 <span class="text-gray-500 dark:text-gray-400 flex-shrink-0 mr-1">
                     <i class='bx bxs-comment-edit'></i>
                 </span>
-               Update Ticket
-           </li>
-            <li class="flex items-center mb-2">
-                <a href="#" class="hover:underline hover:cursor-pointer">
-                    <span class="text-gray-500 dark:text-gray-400 flex-shrink-0">
-                        <i class='bx bx-block' ></i>
-                    </span>
-                    Open
-                </a>
+                Update Status
            </li>
            @auth
             @if(auth()->user()->isAdmin())
+            @if($submission->user)
             <li class="flex items-center mb-2">
-                <a href="#" target="_blank" class="hover:underline hover:cursor-pointer">
+                <a href="{{ route('users.edit', $submission->user->id) }}" target="_blank" class="hover:underline hover:cursor-pointer">
                     <span class="text-gray-500 dark:text-gray-400 flex-shrink-0">
                         <i class='bx bxs-user' ></i>
                     </span>
                     View Profile
                 </a>
             </li>
+            @endif
             <li class="flex items-center mb-2">
                 <a href="#" class="hover:underline hover:cursor-pointer">
                     <span class="text-gray-500 dark:text-gray-400 flex-shrink-0">
@@ -134,6 +183,55 @@
             @endauth
         </ul>
 
+    </div>
+</div>
+
+<!-- Main modal -->
+<div id="static-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Update Status
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="static-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <form action="{{ route('forms.submissions.update', $submission->token) }}" method="POST">
+                @csrf
+            <div class="p-4 md:p-5 space-y-4">
+
+            <div class="mx-auto">
+                <label for="status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status</label>
+                <select id="status" name="status" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <option value="open">Open</option>
+                <option value="closed">Closed</option>
+                <option value="completed">Completed</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email User (Optional)</label>
+                <textarea id="email" name="email" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your thoughts here..."></textarea>
+                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Notify the user about the status update. Leave empty if you do not wish to email</p>
+
+            </div>
+  
+            </div>
+            <!-- Modal footer -->
+            <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Update</button>
+                <button data-modal-hide="static-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Dismiss</button>
+            </div>
+            </form>
+        </div>
     </div>
 </div>
 
