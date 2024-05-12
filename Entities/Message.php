@@ -34,6 +34,11 @@ class Message extends Model
         return $this->guest_email ?? $this->user->email;
     }
 
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
+
     public function notifyNewMessage()
     {
         if(auth()->user() AND auth()->user()->isAdmin()) {

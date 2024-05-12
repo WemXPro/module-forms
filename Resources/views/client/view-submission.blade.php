@@ -11,31 +11,6 @@
 @section('container')
 <header class="mb-4 lg:mb-6 not-format">
    <h1 class="mb-4 text-2xl font-extrabold leading-tight text-gray-900 lg:mb-6 lg:text-4xl dark:text-white">{{ $submission->form->title }}</h1>
-   <div class="flex items-center mb-4">
-        <svg class="mr-2 w-3 h-3 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"><path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z"></path></svg>
-        <time class="font-normal text-gray-500 dark:text-gray-400" pubdate="" datetime="2022-03-08" title="August 3rd, 2022">{{ $submission->created_at->format(settings('date_format', 'd M Y')) }}</time>
-    </div>
-   <div class="flex justify-between items-center py-6 mb-6 border-t border-b border-gray-200 dark:border-gray-700 not-format">
-    <span class="text-sm font-bold text-gray-900 lg:mb-0 dark:text-white">5 Posts</span>
-    <div class="flex items-center">
-        <span class="mr-2 text-xs font-semibold text-gray-900 uppercase dark:text-white">Sort by</span>
-        <button id="dropdownSortingButton" data-dropdown-toggle="dropdownSorting" class="flex items-center py-1 px-2 text-sm font-medium text-gray-500 rounded-full hover:text-primary-600 dark:hover:text-primary-500 md:mr-0 focus:ring-2 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-gray-400" type="button">
-            <span class="sr-only">Open user menu</span>
-            <svg class="ml-1.5 w-2.5 h-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"></path></svg>
-        </button>
-        <!-- Dropdown menu -->
-        <div id="dropdownSorting" class="z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 hidden" data-popper-placement="bottom" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(862px, 363px);">
-            <ul class="py-1 text-sm list-none text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefault">
-                <li>
-                    <a href="$" class="block py-2 px-4 w-full hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Latest</a>
-                </li>
-                <li>
-                    <a href="#" class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Oldest</a>
-                </li>
-            </ul>
-        </div> 
-    </div>
-</div>
 </header>
 
 <div class="flex flex-wrap mt-6">
@@ -50,7 +25,7 @@
             <div>
               This submission is not visible to the user.
             </div>
-          </div>
+        </div>
         @endif
 
         @if(!$submission->paid AND $submission->form->isPaid())
@@ -100,7 +75,7 @@
         <div class="p-6 mb-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
             <dl class="text-gray-900 divide-y divide-gray-200 dark:text-white dark:divide-gray-700">
                 @foreach($submission->data as $key => $value)
-                <div class="flex flex-col pb-3">
+                <div class="flex flex-col pb-3 mb-3">
                     <dt class="mb-1 text-gray-500 md:text-lg dark:text-gray-400">{{ $key }}</dt>
                     <dd class="text-lg font-semibold">{{ $value }}</dd>
                 </div>

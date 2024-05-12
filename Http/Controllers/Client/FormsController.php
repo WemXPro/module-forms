@@ -82,6 +82,10 @@ class FormsController extends Controller
 
     public function viewSubmission(Submission $submission)
     {
+        if($submission->user AND !auth()->user()) {
+            return redirect()->route('login')->withError('Please login to view this page.');
+        }
+
         return view('forms::client.view-submission', compact('submission'));
     }
 
@@ -129,6 +133,10 @@ class FormsController extends Controller
 
     public function postMessage(Request $request, Submission $submission)
     {
+        if($submission->user AND !auth()->user()) {
+            return redirect()->route('login')->withError('Please login to view this page.');
+        }
+        
         if(!$submission->form->can_respond) {
             return redirect()->back()->withError('This form does not allow responses.');
         }
