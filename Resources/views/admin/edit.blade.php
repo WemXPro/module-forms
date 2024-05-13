@@ -183,7 +183,7 @@
                                         <select class="form-control select2 select2-hidden-accessible"
                                                 name="allowed_gateways[]" tabindex="-1" aria-hidden="true" multiple>
                                             @foreach(App\Models\Gateways\Gateway::get() as $gateway)
-                                                @if(!$gateway->status)
+                                                @if(!$gateway->status OR $gateway->type != 'once')
                                                     @continue
                                                 @endif
                                                 <option value="{{ $gateway->id }}" @if(in_array($gateway->id, $form->allowed_gateways ?? [])) selected @endif>{{ $gateway->name }}</option>
