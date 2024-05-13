@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('title');
-            $table->text('description')->nullable();
+            $table->longText('description')->nullable();
             $table->string('slug')->unique();
             $table->float('price')->default(0);
             $table->json('allowed_gateways')->nullable();
