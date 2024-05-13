@@ -15,6 +15,10 @@ class FormsController extends Controller
 {
     public function view(Form $form)
     {
+        if(!$form->active) {
+            return redirect()->route('dashboard')->withError('This form is not active.');
+        }
+
         if(!$form->guest && auth()->guest()) {
             return redirect()->route('login')->withError('You must be logged in to view this page.');
         }
@@ -35,6 +39,10 @@ class FormsController extends Controller
 
     public function submit(Request $request, Form $form)
     {
+        if(!$form->active) {
+            return redirect()->route('dashboard')->withError('This form is not active.');
+        }
+
         if(!$form->guest && auth()->guest()) {
             return redirect()->route('login')->withError('You must be logged in to view this page.');
         }
@@ -121,7 +129,7 @@ class FormsController extends Controller
         $submission->save();
 
         // send email to user
-        if($request->has('email')) {
+        if($request->get('email')) {
             $submission->emailUser([
                 'subject' => 'Your submission has been updated',
                 'content' => $request->get('email'),
@@ -129,6 +137,13 @@ class FormsController extends Controller
         }
 
         return redirect()->back()->withSuccess('Submission updated successfully.');
+    }
+
+    public function deleteSubmission(Submission $submission)
+    {
+        $submission->delete();
+
+        return redirect()->route('admin.forms.submissions.index')->withSuccess('Submission deleted successfully.');
     }
 
     public function postMessage(Request $request, Submission $submission)
@@ -152,6 +167,8 @@ class FormsController extends Controller
             'user_agent' => $request->userAgent(),
             'message' => $request->get('message'),
         ]);
+
+        $message->notifyNewMessage();
 
         return redirect()->back();
     }

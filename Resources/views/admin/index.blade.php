@@ -73,7 +73,7 @@
                                                     class="btn btn-primary mr-2" title="{!! __('Edit') !!}">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <a href="{{ route('admin.forms.destroy', $form->id) }}"
+                                                <a onclick="return confirm('Deleting this form will also delete all submissions linked to the form! Consider deactivating the form instead.')" href="{{ route('admin.forms.destroy', $form->id) }}"
                                                     class="btn btn-danger mr-2" title="{!! __('Delete') !!}">
                                                     <i class="fas fa-trash-alt"></i>
                                                 </a>

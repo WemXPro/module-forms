@@ -15,7 +15,7 @@ use Modules\Forms\Http\Controllers\Client;
 |
 */
 
-Route::prefix('/admin/forms')->middleware('permission')->group(function () {
+Route::prefix('/admin/forms')->middleware('web', 'admin', 'permission')->group(function () {
     Route::get('/', [Admin\FormsController::class, 'index'])->name('admin.forms.index');
     Route::get('/create', [Admin\FormsController::class, 'create'])->name('admin.forms.create');
     Route::post('/store', [Admin\FormsController::class, 'store'])->name('admin.forms.store');
@@ -39,9 +39,10 @@ Route::prefix(config('forms.route_prefix', 'forms'))->group(function(){
     Route::get('/submissions/{submission:token}', [Client\FormsController::class, 'viewSubmission'])->name('forms.view-submission');
     Route::post('/submissions/{submission:token}/pay', [Client\FormsController::class, 'paySubmission'])->name('forms.submissions.pay');
 
-    Route::prefix('/actions')->middleware('permission')->group(function () {
+    Route::prefix('/actions')->middleware('web', 'admin', 'permission')->group(function () {
         Route::post('/submissions/{submission:token}/update', [Client\FormsController::class, 'updateSubmission'])->name('forms.submissions.update');
-
+        Route::get('/submissions/{submission:token}/delete', [Client\FormsController::class, 'deleteSubmission'])->name('forms.submissions.delete');
     });
+    
     Route::post('/submissions/{submission:token}/message', [Client\FormsController::class, 'postMessage'])->name('forms.view-submission.post-message');
 });

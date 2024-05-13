@@ -1,7 +1,7 @@
 @extends(AdminTheme::wrapper(), ['title' => __('Forms'), 'keywords' => 'WemX Dashboard, WemX Panel'])
 
 @section('css_libraries')
-    <link rel="stylesheet" href="{{ asset(AdminTheme::assets('modules/summernote/summernote-bs4.css')) }}" />
+    <link rel="stylesheet" href="{{ asset(AdminTheme::assets('modules/summernote/summernote-bs4.css')) }}"/>
     <link rel="stylesheet" href="{{ asset(AdminTheme::assets('modules/select2/dist/css/select2.min.css')) }}">
 @endsection
 
@@ -37,9 +37,11 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="description">Description (Optional)</label>
-                                <textarea class="form-control" name="description">{{ old('description') }}</textarea>
-                                <small class="form-text text-muted">Description of the form (Displayed to users)</small>
+                                <label for="description">Description</label>
+                                <textarea class="summernote form-control" name="description" id="description"style="display: none;"></textarea>
+                                <small class="form-text text-muted">
+                                    Description of the form (Displayed to users)
+                                </small>
                             </div>
 
                             <div class="form-group">

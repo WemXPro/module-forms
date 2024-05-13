@@ -2,14 +2,21 @@
 @section('title', $form->title)
 @section('keywords', 'WemX Dashboard, WemX Panel')
 
+@section('header')
+    <link rel="stylesheet" href="{{ Theme::get('Default')->assets }}assets/css/typography.min.css">
+@endsection
+
 @section('container')
 <section class="bg-white dark:bg-gray-900">
     <div class="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
-        <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900 dark:text-white">{{ $form->title }}</h2>
-
-        @if($form->description)
-            <p class="mb-8 lg:mb-16 font-light text-center text-gray-500 dark:text-gray-400 sm:text-xl">{{ $form->description }}</p>
-        @endif
+        <article class="format format-sm sm:format-base text-center lg:format-lg format-blue dark:format-invert mx-auto w-full max-w-2xl">
+            <header class="not-format mb-4 lg:mb-6">
+                <h1 class="mb-4 text-3xl text-center font-extrabold leading-tight text-gray-900 dark:text-white lg:mb-6 lg:text-4xl">
+                    {{ $form->title }}
+                </h1>
+            </header>
+            {!! $form->description !!}
+        </article>
 
         <form action="{{ route('forms.submit', $form->slug) }}" method="POST">
             @csrf

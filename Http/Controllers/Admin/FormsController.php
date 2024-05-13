@@ -95,6 +95,7 @@ class FormsController extends Controller
             'guest' => 'boolean',
             'can_view_submission' => 'boolean',
             'can_respond' => 'boolean',         
+            'active' => 'boolean',
         ]);
 
         $form->update([
@@ -111,6 +112,7 @@ class FormsController extends Controller
             'guest' => $request->get('guest', false),
             'can_view_submission' => $request->get('can_view_submission', false),
             'can_respond' => $request->get('can_respond', false),
+            'active' => $request->get('active', false),
         ]);
 
         return redirect()->back()->withSuccess('Form updated successfully.');

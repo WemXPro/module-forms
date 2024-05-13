@@ -1,5 +1,5 @@
 @extends(Theme::wrapper())
-@section('title', 'Tickets')
+@section('title', $submission->form->title)
 
 {{-- Keywords for search engines --}}
 @section('keywords', 'WemX Dashboard, WemX Panel')
@@ -192,8 +192,8 @@
                 </a>
             </li>
             @endif
-            <li class="flex items-center mb-2">
-                <a href="#" class="hover:underline hover:cursor-pointer">
+            <li class="flex items-center mb-2" onclick="deleteSubmission()">
+                <a class="hover:underline hover:cursor-pointer">
                     <span class="text-gray-500 dark:text-gray-400 flex-shrink-0">
                         <i class='bx bxs-trash' ></i>
                     </span>
@@ -255,5 +255,13 @@
         </div>
     </div>
 </div>
+
+<script>
+    function deleteSubmission() {
+        if(confirm('Are you sure you want to delete this submission?')) {
+            window.location.href = "{{ route('forms.submissions.delete', $submission->token) }}";
+        }
+    }
+</script>
 
 @endsection

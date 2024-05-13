@@ -1,10 +1,12 @@
 @extends(AdminTheme::wrapper(), ['title' => __('Forms'), 'keywords' => 'WemX Dashboard, WemX Panel'])
 
 @section('css_libraries')
+    <link rel="stylesheet" href="{{ asset(AdminTheme::assets('modules/summernote/summernote-bs4.css')) }}"/>
     <link rel="stylesheet" href="{{ asset(AdminTheme::assets('modules/select2/dist/css/select2.min.css')) }}">
 @endsection
 
 @section('js_libraries')
+    <script src="{{ asset(AdminTheme::assets('modules/summernote/summernote-bs4.js')) }}"></script>
     <script src="{{ asset(AdminTheme::assets('modules/select2/dist/js/select2.full.min.js')) }}"></script>
 @endsection
 
@@ -97,9 +99,11 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="description">Description (Optional)</label>
-                                <textarea class="form-control" name="description">{{ $form->description }}</textarea>
-                                <small class="form-text text-muted">Description of the form (Displayed to users)</small>
+                                <label for="description">Description</label>
+                                <textarea class="summernote form-control" name="description" id="description"style="display: none;">{!! $form->description !!}</textarea>
+                                <small class="form-text text-muted">
+                                    Description of the form (Displayed to users)
+                                </small>
                             </div>
 
                             <div class="form-group">
@@ -223,7 +227,17 @@
                                         </span>
                                     </label>
                                 </div>
-                                
+                            </div>
+
+                            <div class="form-group">
+                                <div class="control-label">Is Acitve?</div>
+                                <label class="custom-switch mt-2">
+                                    <input type="checkbox" id="active" name="active" class="custom-switch-input" value="1" @if($form->active) checked @endif/>
+                                    <span class="custom-switch-indicator"></span>
+                                    <span class="custom-switch-description">
+                                        Is this from active, toggle to deactivate the form
+                                    </span>
+                                </label>
                             </div>
 
                             <div class="col-md-12">

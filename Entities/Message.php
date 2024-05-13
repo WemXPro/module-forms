@@ -51,15 +51,15 @@ class Message extends Model
                 $button = NULL;
             }
 
-            $this->submission->emailGuest([
+            $this->submission->emailUser([
                 'subject' => 'You have a new message',
-                'content' => 'Your submission has a new message',
+                'content' => "Your submission has a new message <br> <br> <code>{$this->message}</code>",
                 'button' => $button,
             ]);
         } else {
             $this->submission->emailAdmin([
                 'subject' => 'New message on submission',
-                'content' => 'A new message has been posted on submission '. $this->submission->form->title,
+                'content' => "A submission has a new message <br> <br> <code>{$this->message}</code>",
                 'button' => [
                     'name' => 'View Submission',
                     'url' => route('forms.view-submission', $this->submission->token),
