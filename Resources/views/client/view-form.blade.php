@@ -4,6 +4,7 @@
 
 @section('header')
     <link rel="stylesheet" href="{{ Theme::get('Default')->assets }}assets/css/typography.min.css">
+    @turnstileScripts()
 @endsection
 
 @section('container')
@@ -47,6 +48,12 @@
                             @endif
                         </div>
                 @endforeach
+
+                @if (Settings::getJson('encrypted::captcha::cloudflare', 'page_login', false))
+                <div class="mb-4">
+                    <x-turnstile />
+                </div>
+                @endif
 
                 @guest
                 <div id="alert-border-5" class="flex items-center p-3 border-t-4 mb-4 rounded-lg border-gray-300 bg-gray-50 dark:bg-gray-800 dark:border-gray-600" role="alert">

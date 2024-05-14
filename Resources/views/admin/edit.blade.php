@@ -376,7 +376,7 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <form action="{{ route('admin.forms.fields.update', $form->id) }}" method="POST">
+                <form action="{{ route('admin.forms.fields.update', $field->id) }}" method="POST">
                     <div class="modal-body">
                         @csrf
 

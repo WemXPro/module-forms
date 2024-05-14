@@ -6,13 +6,18 @@ use Illuminate\Routing\Controller;
 use Nwidart\Modules\Facades\Module;
 use Modules\Forms\Entities\Form;
 use Modules\Forms\Entities\Submission;
-use Illuminate\Http\Request;
-
 use App\Models\Gateways\Gateway;
+use Illuminate\Http\Request;
+use App\Facades\Captcha;
 use App\Models\Payment;
 
 class FormsController extends Controller
 {
+    public function __construct()
+    {
+        Captcha::setConfig();
+    }
+
     public function view(Form $form)
     {
         if(!$form->active) {
@@ -67,7 +72,7 @@ class FormsController extends Controller
 
         $request->validate(array_merge($form->fieldRules(), ['guest_email' => 'sometimes|email']));
 
-        $data = $request->only(array_merge($form->fieldNames(), ['guest_email']));
+        $data = $request->only(array_merge($form->fieldNames(), ['guest_email', 'cf-turnstile-response' => Captcha::CloudFlareRules('page_login')]));
 
         $submission = $form->submissions()->create([
             'user_id' => auth()->id() ?? null,
