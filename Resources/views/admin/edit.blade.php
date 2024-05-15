@@ -320,7 +320,7 @@
                             <hr>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" id="placeholderdiv0">
                             <label for="placeholder">Placeholder</label>
                             <input type="text" class="form-control" name="placeholder" id="placeholder" placeholder="Placeholder">
                             <small class="form-text text-muted">The placeholder text for this field</small>
@@ -435,7 +435,7 @@
                             <hr>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" id="placeholderdiv{{$field->id}}" @if(in_array($field->type, ['select', 'radio'])) style="display: none" @endif>
                             <label for="placeholder">Placeholder</label>
                             <input type="text" class="form-control" name="placeholder" value="{{$field->placeholder}}" id="placeholder" placeholder="Placeholder">
                             <small class="form-text text-muted">The placeholder text for this field</small>
@@ -531,9 +531,13 @@
             if(value == 'select' || value == 'radio') {
                 // set display to ''
                 document.getElementById('options_div' + id).style.display = '';
+                // hide placeholder
+                document.getElementById('placeholderdiv' + id).style.display = 'none';
             } else {
                 // set display to none
                 document.getElementById('options_div' + id).style.display = 'none';
+                // show placeholder
+                document.getElementById('placeholderdiv' + id).style.display = '';
             }
         }
 

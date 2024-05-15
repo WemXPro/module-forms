@@ -65,4 +65,9 @@ class Form extends Model
     {
         return $this->fields->pluck('rules', 'name')->toArray() ?? [];
     }
+
+    public function url()
+    {
+        return route('forms.view', $this->slug);
+    }
 }

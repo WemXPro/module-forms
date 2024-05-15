@@ -26,19 +26,20 @@
                                 <tbody>
                                     <tr>
                                         <th class="text-center">{!! __('Name') !!}</th>
-                                        <th class="text-center">{!! __('Slug') !!}</th>
+                                        <th class="text-center">{!! __('URL') !!}</th>
                                         <th class="text-center">{!! __('Notification Email') !!}</th>
+                                        <th class="text-center">{!! __('Price') !!}</th>
                                         <th class="text-center">{!! __('Allow Guest') !!}</th>
                                         <th class="text-center">{!! __('Can view own submission') !!}</th>
-                                        <th class="text-center">{!! __('Can Respond') !!}</th>
                                         <th class="text-center">{!! __('Actions') !!}</th>
                                     </tr>
 
                                     @foreach ($forms as $form)
                                         <tr>
                                             <td class="text-center">{{ $form->name }}</td>
-                                            <td class="text-center">{{ $form->slug }}</td>
+                                            <td class="text-center"><a target="_blank" href="{{$form->url()}}">{{ $form->url() }}</a></td>
                                             <td class="text-center">{{ $form->notification_email }}</td>
+                                            <td class="text-center">{{ price($form->price) }}</td>
 
                                             <td class="text-center">
                                                 @if ($form->guest)
@@ -56,13 +57,6 @@
                                                 @endif
                                             </td>
 
-                                            <td class="text-center">
-                                                @if ($form->can_respond)
-                                                    <span class="badge badge-success">Yes</span>
-                                                @else
-                                                    <span class="badge badge-danger">No</span>
-                                                @endif
-                                            </td>
 
                                             <td class="text-center">
                                                 <a target="_blank" href="{{ route('admin.forms.submissions.index', ['form_id' => $form->id]) }}"
