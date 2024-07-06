@@ -8,7 +8,7 @@
 @endsection
 
 @section('container')
-<section class="bg-white dark:bg-gray-900">
+<section>
     <div class="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
         <article class="format format-sm sm:format-base text-center lg:format-lg format-blue dark:format-invert mx-auto w-full max-w-2xl">
             <header class="not-format mb-4 lg:mb-6">
