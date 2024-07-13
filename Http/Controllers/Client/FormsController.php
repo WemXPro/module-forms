@@ -175,6 +175,8 @@ class FormsController extends Controller
 
         $message->notifyNewMessage();
 
+        $submission->update(['updated_at' => now()]);
+
         return redirect()->back();
     }
 }

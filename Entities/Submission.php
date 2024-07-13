@@ -21,6 +21,8 @@ class Submission extends Model
         'ip_address',
         'user_agent',
         'paid',
+        'updated_at',
+        'created_at',
     ];
 
     protected $casts = [
