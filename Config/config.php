@@ -5,8 +5,8 @@ return [
     'name' => 'Forms Module',
     'icon' => 'https://imgur.png',
     'author' => 'WemX',
-    'version' => '1.0.0',
-    'wemx_version' => '1.0.0',
+    'version' => '1.1.0',
+    'wemx_version' => '2.2.0',
 
     'route_prefix' => env('FORMS_ROUTE_PREFIX', 'forms'),
 
