@@ -70,6 +70,10 @@ class FormsController extends Controller
             'can_respond' => $request->get('can_respond', false),
         ]);
 
+        if ($request->has('meta_description')) {
+            $form->settings()->put('meta_description', $request->get('meta_description'));
+        }
+
         return redirect()->route('admin.forms.edit', $form->id)->withSuccess('Form created successfully.');
     }
 
@@ -114,6 +118,10 @@ class FormsController extends Controller
             'can_respond' => $request->get('can_respond', false),
             'active' => $request->get('active', false),
         ]);
+
+        if ($request->has('meta_description')) {
+            $form->settings()->put('meta_description', $request->get('meta_description'));
+        }
 
         return redirect()->back()->withSuccess('Form updated successfully.');
     }

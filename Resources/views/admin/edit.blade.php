@@ -99,6 +99,14 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="description">Meta Description</label>
+                                <textarea class="form-control" name="meta_description">{{ $form->settings('meta_description', '') }}</textarea>
+                                <small class="form-text text-muted">
+                                    Meta description of the form (Displayed to search engines and social media)
+                                </small>
+                            </div>
+
+                            <div class="form-group">
                                 <label for="description">Description</label>
                                 <textarea class="summernote form-control" name="description" id="description"style="display: none;">{!! $form->description !!}</textarea>
                                 <small class="form-text text-muted">

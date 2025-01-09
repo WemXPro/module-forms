@@ -2,10 +2,12 @@
 
 namespace Modules\Forms\Entities;
 
+use App\Traits\Models\HasSettings;
 use Illuminate\Database\Eloquent\Model;
 
 class Form extends Model
 {
+    use HasSettings;
     protected $table = 'module_forms';
 
     protected $fillable = [

@@ -2,6 +2,10 @@
 @section('title', $form->title)
 @section('keywords', 'WemX Dashboard, WemX Panel')
 
+@php
+    $meta_description = $form->settings('meta_description', null);
+@endphp
+
 @section('header')
     <link rel="stylesheet" href="{{ Theme::get('Default')->assets }}assets/css/typography.min.css">
     @turnstileScripts()
