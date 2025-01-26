@@ -20,7 +20,7 @@
                     <div class="card-body p-0">
                         @if($forms->isEmpty())
                             @include(AdminTheme::path('empty-state'), ['title' => 'No forms found', 'description' => 'Create a new form by clicking the button above.'])
-                        @else 
+                        @else
                         <div class="table-responsive">
                             <table class="table table-striped table-md">
                                 <tbody>
@@ -90,12 +90,12 @@
 @endsection
 
 @section('css_libraries')
-    <link rel="stylesheet" href="{{ asset(AdminTheme::assets('modules/summernote/summernote-bs4.css')) }}" />
-    <link rel="stylesheet" href="{{ asset(AdminTheme::assets('modules/select2/dist/css/select2.min.css')) }}">
+    <link rel="stylesheet" href="{{ AdminTheme::assets('modules/summernote/summernote-bs4.css') }}">
+    <link rel="stylesheet" href="{{ AdminTheme::assets('modules/select2/dist/css/select2.min.css') }}">
 @endsection
 
 @section('js_libraries')
-    <script src="{{ asset(AdminTheme::assets('modules/summernote/summernote-bs4.js')) }}"></script>
-    <script src="{{ asset(AdminTheme::assets('modules/select2/dist/js/select2.full.min.js')) }}"></script>
+    <script src="{{ AdminTheme::assets('modules/summernote/summernote-bs4.js') }}"></script>
+    <script src="{{ AdminTheme::assets('modules/select2/dist/js/select2.full.min.js') }}"></script>
     <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
 @endsection

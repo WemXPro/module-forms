@@ -1,13 +1,13 @@
 @extends(AdminTheme::wrapper(), ['title' => __('Forms'), 'keywords' => 'WemX Dashboard, WemX Panel'])
 
 @section('css_libraries')
-    <link rel="stylesheet" href="{{ asset(AdminTheme::assets('modules/summernote/summernote-bs4.css')) }}"/>
-    <link rel="stylesheet" href="{{ asset(AdminTheme::assets('modules/select2/dist/css/select2.min.css')) }}">
+    <link rel="stylesheet" href="{{ AdminTheme::assets('modules/summernote/summernote-bs4.css') }}">
+    <link rel="stylesheet" href="{{ AdminTheme::assets('modules/select2/dist/css/select2.min.css') }}">
 @endsection
 
 @section('js_libraries')
-    <script src="{{ asset(AdminTheme::assets('modules/summernote/summernote-bs4.js')) }}"></script>
-    <script src="{{ asset(AdminTheme::assets('modules/select2/dist/js/select2.full.min.js')) }}"></script>
+    <script src="{{ AdminTheme::assets('modules/summernote/summernote-bs4.js') }}"></script>
+    <script src="{{ AdminTheme::assets('modules/select2/dist/js/select2.full.min.js') }}"></script>
 @endsection
 
 @section('container')
@@ -68,7 +68,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        @else 
+                        @else
                             @include(AdminTheme::path('empty-state'), ['title' => 'No Fields', 'description' => 'This form has no fields. Please add some fields to this form to continue.'])
                         @endif
                     </div>
@@ -140,7 +140,7 @@
                                         value="{{ $form->max_submissions }}">
                                     <small class="form-text text-muted">Maximum amount of times this form can be submitted before its closed. (Leave empty to not set a limit)</small>
                                 </div>
-    
+
                                 <div class="form-group col-6">
                                     <label for="max_submissions_per_user">Maximum Submissions per user (Optional)</label>
                                     <input type="number" class="form-control" name="max_submissions_per_user" id="max_submissions_per_user"
@@ -333,7 +333,7 @@
                             <input type="text" class="form-control" name="placeholder" id="placeholder" placeholder="Placeholder">
                             <small class="form-text text-muted">The placeholder text for this field</small>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="default_value">Default Value (optional)</label>
                             <input type="text" class="form-control" name="default_value" id="default_value" placeholder="Default Value">
@@ -372,7 +372,7 @@
             </div>
         </div>
     </div>
-    
+
     @foreach($form->fields()->orderBy('order', 'desc')->get() as $field)
     {{-- edit field modal --}}
     <div class="modal fade" id="editFieldModal{{ $field->id }}" tabindex="-1" role="dialog" aria-labelledby="editFieldModal{{ $field->id }}Label">
@@ -448,7 +448,7 @@
                             <input type="text" class="form-control" name="placeholder" value="{{$field->placeholder}}" id="placeholder" placeholder="Placeholder">
                             <small class="form-text text-muted">The placeholder text for this field</small>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="default_value">Default Value (optional)</label>
                             <input type="text" class="form-control" name="default_value" value="{{$field->default_value}}" id="default_value" placeholder="Default Value">
@@ -533,7 +533,7 @@
                         .replace(/[\s_-]+/g, '_') // replace spaces, underscores, and hyphens with a single hyphen
                         .replace(/^-+|-+$/g, ''); // remove leading and trailing hyphens
         }
-        
+
         function fieldTypeUpdated(value, id = 0)
         {
             if(value == 'select' || value == 'radio') {
@@ -559,7 +559,7 @@
             }
 
             if (rules.value.length > 0) {
-                // make sure string does not end with | 
+                // make sure string does not end with |
                 if (rules.value.endsWith('|')) {
                     rules.value += rule;
                 } else {
@@ -598,7 +598,7 @@
         function generateSlug() {
             var slug = document.getElementById('slug');
             var name = document.getElementById('name').value;
-            
+
             // set title to name
             document.getElementById('title').value = name;
 

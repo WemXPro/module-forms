@@ -1,13 +1,13 @@
 @extends(AdminTheme::wrapper(), ['title' => __('Forms'), 'keywords' => 'WemX Dashboard, WemX Panel'])
 
 @section('css_libraries')
-    <link rel="stylesheet" href="{{ asset(AdminTheme::assets('modules/summernote/summernote-bs4.css')) }}"/>
-    <link rel="stylesheet" href="{{ asset(AdminTheme::assets('modules/select2/dist/css/select2.min.css')) }}">
+    <link rel="stylesheet" href="{{ AdminTheme::assets('modules/summernote/summernote-bs4.css') }}">
+    <link rel="stylesheet" href="{{ AdminTheme::assets('modules/select2/dist/css/select2.min.css') }}">
 @endsection
 
 @section('js_libraries')
-    <script src="{{ asset(AdminTheme::assets('modules/summernote/summernote-bs4.js')) }}"></script>
-    <script src="{{ asset(AdminTheme::assets('modules/select2/dist/js/select2.full.min.js')) }}"></script>
+    <script src="{{ AdminTheme::assets('modules/summernote/summernote-bs4.js') }}"></script>
+    <script src="{{ AdminTheme::assets('modules/select2/dist/js/select2.full.min.js') }}"></script>
 @endsection
 
 @section('container')
@@ -78,7 +78,7 @@
                                         value="{{ old('max_submissions') }}">
                                     <small class="form-text text-muted">Maximum amount of times this form can be submitted before its closed. (Leave empty to not set a limit)</small>
                                 </div>
-    
+
                                 <div class="form-group col-6">
                                     <label for="max_submissions_per_user">Maximum Submissions per user (Optional)</label>
                                     <input type="number" class="form-control" name="max_submissions_per_user" id="max_submissions_per_user"
@@ -173,7 +173,7 @@
                                         </span>
                                     </label>
                                 </div>
-                                
+
                             </div>
 
                             <div class="col-md-12">
@@ -211,7 +211,7 @@
         function generateSlug() {
             var slug = document.getElementById('slug');
             var name = document.getElementById('name').value;
-            
+
             // set title to name
             document.getElementById('title').value = name;
 
