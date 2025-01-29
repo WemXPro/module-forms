@@ -2,10 +2,10 @@
 
 namespace Modules\Forms\Entities;
 
+use App\Models\EmailHistory;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use App\Models\User;
-use App\Models\EmailHistory;
 
 class Submission extends Model
 {
@@ -97,7 +97,7 @@ class Submission extends Model
 
     public function emailAdmin($email)
     {
-        if($this->form->notification_email) { 
+        if($this->form->notification_email) {
             $user = User::where('email', $this->form->notification_email)->first();
             if($user) {
                 $user->email([
@@ -120,7 +120,7 @@ class Submission extends Model
         }
     }
 
-    public function emailUser($email) 
+    public function emailUser($email)
     {
         if($this->user) {
             $this->user->email([

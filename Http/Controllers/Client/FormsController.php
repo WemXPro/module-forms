@@ -1,15 +1,13 @@
 <?php
 namespace Modules\Forms\Http\Controllers\Client;
 
-use Illuminate\Contracts\Support\Renderable;
+use App\Facades\Captcha;
+use App\Models\Gateways\Gateway;
+use App\Models\Payment;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Nwidart\Modules\Facades\Module;
 use Modules\Forms\Entities\Form;
 use Modules\Forms\Entities\Submission;
-use App\Models\Gateways\Gateway;
-use Illuminate\Http\Request;
-use App\Facades\Captcha;
-use App\Models\Payment;
 
 class FormsController extends Controller
 {
@@ -38,7 +36,7 @@ class FormsController extends Controller
         if($form->isPaid() AND auth()->guest()) {
             return redirect()->route('login')->withError('You must be logged to complete the payment.');
         }
-        
+
         return view('forms::client.view-form', compact('form'));
     }
 
@@ -156,7 +154,7 @@ class FormsController extends Controller
         if($submission->user AND !auth()->user()) {
             return redirect()->route('login')->withError('Please login to view this page.');
         }
-        
+
         if(!$submission->form->can_respond) {
             return redirect()->back()->withError('This form does not allow responses.');
         }

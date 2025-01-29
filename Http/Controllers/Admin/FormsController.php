@@ -1,13 +1,11 @@
 <?php
 namespace Modules\Forms\Http\Controllers\Admin;
 
-use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Nwidart\Modules\Facades\Module;
 use Modules\Forms\Entities\Form;
 use Modules\Forms\Entities\FormField;
 use Modules\Forms\Entities\Submission;
-use Illuminate\Http\Request;
 
 
 class FormsController extends Controller
@@ -51,7 +49,7 @@ class FormsController extends Controller
             'price' => 'nullable|numeric',
             'guest' => 'nullable|boolean',
             'can_view_submission' => 'nullable|boolean',
-            'can_respond' => 'nullable|boolean',            
+            'can_respond' => 'nullable|boolean',
         ]);
 
         $form = Form::create([
@@ -98,7 +96,7 @@ class FormsController extends Controller
             'price' => 'nullable|numeric',
             'guest' => 'boolean',
             'can_view_submission' => 'boolean',
-            'can_respond' => 'boolean',         
+            'can_respond' => 'boolean',
             'active' => 'boolean',
         ]);
 

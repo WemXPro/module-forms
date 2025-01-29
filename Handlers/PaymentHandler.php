@@ -3,8 +3,8 @@
 namespace Modules\Forms\Handlers;
 
 use App\Facades\ServiceHandler;
-use Modules\Forms\Entities\Submission;
 use App\Models\Payment;
+use Modules\Forms\Entities\Submission;
 
 class PaymentHandler extends ServiceHandler
 {

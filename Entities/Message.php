@@ -2,9 +2,8 @@
 
 namespace Modules\Forms\Entities;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
